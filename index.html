@@ -603,6 +603,57 @@
 </div>
 
 <script defer>
+/* ── PAINEL DE DEBUG TEMPORÁRIO ── */
+(function(){
+  const box = document.createElement('div');
+  box.id = 'debugBox';
+  box.style.cssText = 'position:fixed;top:0;left:0;right:0;max-height:70vh;overflow-y:auto;background:#000;color:#0f0;font-family:monospace;font-size:11px;padding:10px;z-index:999999;border-bottom:3px solid red;white-space:pre-wrap;word-break:break-all;';
+  const btn = document.createElement('button');
+  btn.textContent = '📋 Copiar tudo';
+  btn.style.cssText = 'position:fixed;top:70vh;left:0;right:0;z-index:999999;background:red;color:#fff;border:none;padding:10px;font-weight:bold;font-size:14px;';
+  document.body.appendChild(box);
+  document.body.appendChild(btn);
+  function log(msg){
+    const line = document.createElement('div');
+    line.style.marginBottom = '4px';
+    line.textContent = msg;
+    box.appendChild(line);
+  }
+  window._debugLog = log;
+  btn.onclick = function(){
+    const text = Array.from(box.children).map(l=>l.textContent).join('\n');
+    if(navigator.clipboard) navigator.clipboard.writeText(text).then(()=>{btn.textContent='✅ Copiado! Cola no chat';}).catch(()=>{prompt('Copia manualmente:', text);});
+    else prompt('Copia manualmente:', text);
+  };
+  log('--- DIAGNÓSTICO IP DIGITAL AO ---');
+  log('URL: ' + window.location.href);
+  log('User agent: ' + navigator.userAgent.slice(0,80));
+  log('Hora: ' + new Date().toLocaleTimeString());
+  window.addEventListener('error', function(e){
+    log('❌ ERRO JS: ' + e.message + ' | arquivo: ' + (e.filename||'?').split('/').pop() + ' linha ' + e.lineno);
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    log('❌ PROMISE REJEITADA: ' + (e.reason && e.reason.message ? e.reason.message : JSON.stringify(e.reason)));
+  });
+  setTimeout(function(){
+    log('--- 5 segundos depois ---');
+    log('typeof firebase: ' + typeof firebase);
+    if(typeof firebase !== 'undefined'){
+      try {
+        log('Firebase apps inicializadas: ' + firebase.apps.length);
+      } catch(e){ log('Erro ao checar firebase.apps: ' + e.message); }
+    }
+    log('window._appReady: ' + !!window._appReady);
+  }, 5000);
+  setTimeout(function(){
+    log('--- 12 segundos depois ---');
+    log('window._appReady: ' + !!window._appReady);
+    if(!window._appReady){
+      log('⚠️ A app não ficou pronta a tempo. Ver erros acima.');
+    }
+  }, 12000);
+})();
+
 /* ── PREMIUM LOADER (IP Digital AO) ── */
 const IPL_MESSAGES = ['Carregando...','Preparando a tua experiência...','Aguarda um instante...'];
 let iplMsgInterval = null, iplMsgIndex = 0, iplShowCount = 0, iplHideTimeout = null;
@@ -725,6 +776,8 @@ function startListening(){
       if(auth.currentUser) saveToStorage();
     }
     S._ready = true;
+    window._appReady = true;
+    if(window._debugLog) window._debugLog('✅ SUCESSO: dados da loja carregados do Firestore.');
     if(window._removeLoadingOv) { window._removeLoadingOv(); window._removeLoadingOv=null; }
     hideLoader();
     renderStore();
@@ -739,6 +792,7 @@ function startListening(){
     if(!S._urlParamsHandled){ S._urlParamsHandled = true; handleUrlParams(); }
   }, function(err){
     console.error('Erro a sincronizar com a base de dados.', err);
+    if(window._debugLog) window._debugLog('❌ ERRO FIRESTORE (loja/dados): código=' + err.code + ' mensagem=' + err.message);
     forceHideLoader();
     toast('⚠️ Sem ligação à base de dados','tr');
   });
