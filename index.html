@@ -5,6 +5,23 @@
 <meta name="theme-color" content="#0E0C0A">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IP Digital AO</title>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2233461574096804');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2233461574096804&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 <meta name="description" content="Ebooks e cursos digitais criados para o mercado angolano. Paga em Kwanzas via Multicaixa Express ou Transferência Bancária e recebe imediatamente.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="IP Digital AO — Conhecimento que te faz ganhar dinheiro">
@@ -1522,6 +1539,7 @@ function goToCheckout(){
   S_abandonedLogged = false;
   setCheckoutStep(1);
   selPay('mx');goTo('checkout');
+  if(typeof fbq==='function'){fbq('track','InitiateCheckout',{value:p.price,currency:'AOA',content_name:p.name,content_ids:[p.id]});}
 }
 function toggleBumpSelection(){
   haptic('light');
@@ -2597,6 +2615,11 @@ function doConfirm(){
     closeOv('ovConfirm');
     toast('✅ Confirmado! A enviar email...','tg');
     sendDeliveryEmail({...o, deliveryLink:link});
+    if(typeof fbq==='function'){
+      var purchaseValue = (o.price||0) + (o.bumpPrice||0);
+      fbq('init','2233461574096804',{em:o.email||'',ph:(o.phone||'').replace(/\D/g,'')});
+      fbq('track','Purchase',{value:purchaseValue,currency:'AOA',content_name:o.productName,content_ids:[o.productId]},{eventID:o.id});
+    }
   }).catch(function(e){
     console.error('Erro ao confirmar pedido.',e);
     toast('⚠️ Não foi possível confirmar o pedido','tr');
