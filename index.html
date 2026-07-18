@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2233461574096804');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2233461574096804&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 <meta charset="UTF-8">
 <meta name="theme-color" content="#100C1E">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -489,6 +506,7 @@
 
     <!-- AFFILIATES -->
     <div id="tab-affiliates" style="display:none">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn bo bsm" onclick="recomputeAllAffStats()">🔄 Recalcular estatísticas de afiliados</button></div>
       <div id="affLimitBanner" class="limit-banner">
         <p id="affLimitText">0 / 20 afiliados activos</p>
         <div class="limit-dots" id="affLimitDots"></div>
@@ -905,6 +923,8 @@ const CLICKS_COL = db.collection('cliquesAfiliado');
 const AFF_PIXEL_COL = db.collection('afiliadosPixel');
 const USERS_COL = db.collection('usuarios');
 const FEEDBACK_COL = db.collection('feedback');
+const AFF_STATS_COL = db.collection('afiliadosStats');
+const STATS_COL = db.collection('estatisticasAfiliados');
 
 const EMAILJS_SERVICE_ID = 'service_fxvskeq';
 const EMAILJS_TEMPLATE_ID = 'template_n9ift3r';
@@ -935,6 +955,7 @@ const S = {
   withdrawals: [],
   abandonedCheckouts: [],
   feedbacks: [],
+  myOrders: [],
   coupons: [],
   appliedCoupon: null,
   affClickCounts: {},
@@ -1141,10 +1162,6 @@ function startListeningAffPixels(){
 }
 
 startListening();
-startListeningOrders();
-startListeningAffRequests();
-startListeningWithdrawals();
-startListeningAbandoned();
 let unsubscribeFeedback = null;
 function startListeningFeedback(){
   if(unsubscribeFeedback) unsubscribeFeedback();
@@ -1162,15 +1179,55 @@ function updateFeedbackDueBadge(){
   const n = (S.feedbacks||[]).filter(f=>f.status==='pending').length;
   if(n>0){ badge.style.display='inline'; badge.textContent=n; } else { badge.style.display='none'; }
 }
-startListeningFeedback();
 startListeningAffPixels();
 checkMagicLinkOnLoad();
+
+/* ── Dados sensíveis (pedidos, abandonados, pedidos de afiliação, saques) só são
+   descarregados quando há sessão de ADMIN confirmada — nunca para um visitante comum.
+   Isto evita que qualquer pessoa que visite a loja consiga ver dados de clientes. ── */
+/* ── Pedidos do próprio cliente (consulta filtrada pelo email autenticado —
+   nunca descarrega os pedidos de outras pessoas) ── */
+let unsubscribeMyOrders = null;
+function startMyOrders(email){
+  if(unsubscribeMyOrders) unsubscribeMyOrders();
+  if(!email) { S.myOrders = []; return; }
+  const emailLc = email.toLowerCase().trim();
+  unsubscribeMyOrders = ORDERS_COL.where('email','==',emailLc).onSnapshot(function(snap){
+    S.myOrders = snap.docs.map(function(d){ return {...d.data(), _docId:d.id}; });
+    if(document.getElementById('page-customerPanel').classList.contains('active')) renderCustomerPanel();
+  }, function(err){
+    console.error('Erro a sincronizar os teus pedidos.', err);
+  });
+}
+function stopMyOrders(){
+  if(unsubscribeMyOrders) unsubscribeMyOrders();
+  S.myOrders = [];
+}
+
+function startAdminOnlyListeners(){
+  startListeningOrders();
+  startListeningAffRequests();
+  startListeningWithdrawals();
+  startListeningAbandoned();
+  startListeningFeedback();
+}
+function stopAdminOnlyListeners(){
+  if(unsubscribeOrders) unsubscribeOrders();
+  if(unsubscribeAffReq) unsubscribeAffReq();
+  if(unsubscribeWithdrawals) unsubscribeWithdrawals();
+  if(unsubscribeAbandoned) unsubscribeAbandoned();
+  if(unsubscribeFeedback) unsubscribeFeedback();
+  S.orders = []; S.affiliateRequests = []; S.withdrawals = []; S.abandonedCheckouts = []; S.feedbacks = [];
+}
+
 
 auth.onAuthStateChanged(function(user){
   if(!user){
     S.loggedIn = false;
     S.currentUserRole = null;
     S.currentCustomer = null;
+    stopAdminOnlyListeners();
+    stopMyOrders();
     document.getElementById('adminBtn').style.display = 'none';
     document.getElementById('adminPip').classList.remove('show');
     updateCustomerNavUI();
@@ -1184,6 +1241,8 @@ auth.onAuthStateChanged(function(user){
     document.getElementById('adminPip').classList.add('show');
     S.currentCustomer = null;
     updateCustomerNavUI();
+    stopMyOrders();
+    startAdminOnlyListeners();
     // garante que o registo existe no Firestore também, para consistência futura (não bloqueia o acesso se falhar)
     USERS_COL.doc(user.uid).set({role:'admin', email:user.email}, {merge:true}).catch(function(err){
       console.error('Aviso: não foi possível sincronizar o registo de admin no Firestore.', err);
@@ -1191,6 +1250,7 @@ auth.onAuthStateChanged(function(user){
     return;
   }
   // Qualquer outro email é tratado como cliente — nunca tem acesso ao admin
+  stopAdminOnlyListeners();
   USERS_COL.doc(user.uid).get().then(function(snap){
     const data = snap.exists ? snap.data() : null;
     S.currentUserRole = 'customer';
@@ -1199,6 +1259,7 @@ auth.onAuthStateChanged(function(user){
     document.getElementById('adminPip').classList.remove('show');
     S.currentCustomer = data ? {uid:user.uid, email:user.email, ...data} : {uid:user.uid, email:user.email};
     updateCustomerNavUI();
+    startMyOrders(user.email);
   }).catch(function(err){
     console.error('Erro ao verificar dados do utilizador.', err);
     S.loggedIn = false;
@@ -1207,6 +1268,7 @@ auth.onAuthStateChanged(function(user){
     document.getElementById('adminPip').classList.remove('show');
     S.currentCustomer = {uid:user.uid, email:user.email};
     updateCustomerNavUI();
+    startMyOrders(user.email);
   });
 });
 
@@ -1225,6 +1287,7 @@ function checkMagicLinkOnLoad(){
     let email = window.localStorage.getItem('ipd_login_email');
     if(!email){
       email = window.prompt('Confirma o teu email para entrares na tua conta:');
+      if(email) email = email.trim().toLowerCase();
     }
     if(!email) return;
     showLoader();
@@ -1292,7 +1355,7 @@ function renderCustomerPanel(){
   document.getElementById('custName').textContent = c.name || 'A minha conta';
   document.getElementById('custEmail').textContent = c.email || '';
   document.getElementById('custAv').textContent = (c.name||c.email||'?').charAt(0).toUpperCase();
-  const myOrders = S.orders.filter(o=>o.email && o.email.toLowerCase().trim() === (c.email||'').toLowerCase().trim());
+  const myOrders = S.myOrders||[];
   const totalSpent = myOrders.filter(o=>o.status==='confirmed'||o.status==='delivered').reduce((s,o)=>s+o.price,0);
   const delivered = myOrders.filter(o=>o.status==='confirmed'||o.status==='delivered');
   document.getElementById('customerPanelBody').innerHTML = `
@@ -1333,7 +1396,7 @@ function renderCustomerPanel(){
 let S_isSendingMagicLink = false;
 function submitCustomerAuthEmail(){
   if(S_isSendingMagicLink) return;
-  const email = document.getElementById('custAuthEmail').value.trim();
+  const email = document.getElementById('custAuthEmail').value.trim().toLowerCase();
   if(!email || !email.includes('@')){ toast('⚠️ Insere um email válido','tr'); return; }
   S_isSendingMagicLink = true;
   const btn = document.getElementById('custAuthSendBtn');
@@ -1697,7 +1760,7 @@ function startTimer(){
 
 let S_fbOrderId = null, S_fbRating = 5;
 function openFeedbackModal(orderId){
-  const o = S.orders.find(x=>x.id===orderId);
+  const o = S.myOrders.find(x=>x.id===orderId);
   if(!o){ toast('⚠️ Pedido não encontrado','tr'); return; }
   S_fbOrderId = orderId;
   S_fbRating = 5;
@@ -1714,7 +1777,7 @@ function setFbRating(n){ S_fbRating = n; renderFbStars(); }
 let S_isSendingFeedback = false;
 function submitFeedback(){
   if(S_isSendingFeedback) return;
-  const o = S.orders.find(x=>x.id===S_fbOrderId);
+  const o = S.myOrders.find(x=>x.id===S_fbOrderId);
   const text = document.getElementById('fbText').value.trim();
   if(!o){ toast('⚠️ Pedido não encontrado','tr'); return; }
   if(!text){ toast('⚠️ Escreve umas palavras sobre a tua experiência','tr'); return; }
@@ -1929,7 +1992,7 @@ function submitOrder(){
   if(S_isSubmittingOrder){toast('⏳ O teu pedido já está a ser enviado, aguarda um instante...','tv');return;}
   if(!S.curProd){toast('⚠️ Sessão expirada, escolhe o produto novamente','tr');goTo('store');return;}
   const name=document.getElementById('fName').value.trim();
-  const email=document.getElementById('fEmail').value.trim();
+  const email=document.getElementById('fEmail').value.trim().toLowerCase();
   const phone=document.getElementById('fPhone').value.trim();
   if(!name){markFieldError('fName','⚠️ Insere o teu nome');return;}
   if(!email||!email.includes('@')){markFieldError('fEmail','⚠️ Email inválido');return;}
@@ -1969,6 +2032,10 @@ function submitOrder(){
     notifyAdminNewOrder(order);
     if(S.appliedCoupon) incrementCouponUse(S.appliedCoupon.code);
     fireAffiliatePixelPurchase(order.price);
+    if(window.fbq){
+      try{ window.fbq('track', 'Purchase', {value: order.price, currency: 'AOA'}); }
+      catch(e){ console.error('Aviso: falha ao disparar evento Purchase do pixel da loja.', e); }
+    }
     setCheckoutStep(3);
     if(btn){
       btn.innerHTML = '<span class="check-ic">✓</span> Pedido enviado!';
@@ -2080,26 +2147,32 @@ function renderAffDash(codeOverride){
   document.getElementById('affDashName').textContent=aff.name;
   document.getElementById('afpRole').textContent='Afiliado IP Digital AO · Código '+aff.code;
   document.getElementById('afpAv').textContent=(aff.name||'?').charAt(0).toUpperCase();
-  const sales = S.orders.filter(o=>o.affCode===aff.code);
-  const confirmedSales = sales.filter(o=>o.status==='confirmed'||o.status==='delivered');
-  const pendingSales = sales.filter(o=>o.status==='pending');
-  const totalCommission = confirmedSales.reduce((s,o)=>s+(o.affCommission||0),0);
-  const paidSoFar = aff.paidTotal||0;
-  const pendingCommission = totalCommission - paidSoFar;
 
-  // gamificação leve: níveis por número de vendas confirmadas
-  const levels=[{n:0,lbl:'Iniciante'},{n:3,lbl:'Bronze'},{n:10,lbl:'Prata'},{n:25,lbl:'Ouro'},{n:50,lbl:'Diamante'}];
-  let curLevel=levels[0], nextLevel=levels[1];
-  for(let i=0;i<levels.length;i++){ if(confirmedSales.length>=levels[i].n){curLevel=levels[i]; nextLevel=levels[i+1]||null;} }
-  const progressPct = nextLevel ? Math.min(100, Math.round((confirmedSales.length-curLevel.n)/(nextLevel.n-curLevel.n)*100)) : 100;
+  Promise.all([
+    AFF_STATS_COL.doc(aff.code).get().catch(function(){return null;}),
+    fetchAffClickCounts()
+  ]).then(function(results){
+    const statsSnap = results[0];
+    const counts = results[1];
+    const stats = (statsSnap && statsSnap.exists) ? statsSnap.data() : {confirmedCount:0, pendingCount:0, totalCommission:0, confirmedDates:[]};
+    const confirmedCount = stats.confirmedCount||0;
+    const totalCommission = stats.totalCommission||0;
+    const confirmedDates = stats.confirmedDates||[];
+    const paidSoFar = aff.paidTotal||0;
+    const pendingCommission = totalCommission - paidSoFar;
 
-  fetchAffClickCounts().then(function(counts){
+    // gamificação leve: níveis por número de vendas confirmadas
+    const levels=[{n:0,lbl:'Iniciante'},{n:3,lbl:'Bronze'},{n:10,lbl:'Prata'},{n:25,lbl:'Ouro'},{n:50,lbl:'Diamante'}];
+    let curLevel=levels[0], nextLevel=levels[1];
+    for(let i=0;i<levels.length;i++){ if(confirmedCount>=levels[i].n){curLevel=levels[i]; nextLevel=levels[i+1]||null;} }
+    const progressPct = nextLevel ? Math.min(100, Math.round((confirmedCount-curLevel.n)/(nextLevel.n-curLevel.n)*100)) : 100;
+
     const clicks = counts[aff.code] || 0;
-    const conversionRate = clicks ? ((confirmedSales.length/clicks)*100).toFixed(1) : '—';
+    const conversionRate = clicks ? ((confirmedCount/clicks)*100).toFixed(1) : '—';
 
     // meta mensal: vendas confirmadas dentro do mês corrente
     const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
-    const monthlySales = confirmedSales.filter(o=>{ const d=parseOrderDate(o.date); return d && d.getTime()>=monthStart.getTime(); }).length;
+    const monthlySales = confirmedDates.filter(dStr=>{ const d=parseOrderDate(dStr); return d && d.getTime()>=monthStart.getTime(); }).length;
     const monthlyGoal = aff.monthlyGoal || 0;
     const goalPct = monthlyGoal ? Math.min(100, Math.round((monthlySales/monthlyGoal)*100)) : 0;
 
@@ -2140,7 +2213,7 @@ function renderAffDash(codeOverride){
 
     <div class="afp-metrics">
       <div class="afp-metric"><div class="afp-metric-val">👆 ${clicks}</div><div class="afp-metric-lbl">Cliques no link</div></div>
-      <div class="afp-metric"><div class="afp-metric-val sg">${confirmedSales.length}</div><div class="afp-metric-lbl">Confirmadas</div></div>
+      <div class="afp-metric"><div class="afp-metric-val sg">${confirmedCount}</div><div class="afp-metric-lbl">Confirmadas</div></div>
       <div class="afp-metric"><div class="afp-metric-val">${conversionRate}${clicks?'%':''}</div><div class="afp-metric-lbl">Conversão</div></div>
       <div class="afp-metric"><div class="afp-metric-val sv">${fmt(totalCommission)}</div><div class="afp-metric-lbl">Comissão (Kz)</div></div>
     </div>
@@ -2148,11 +2221,11 @@ function renderAffDash(codeOverride){
     <div class="chart-card" id="affSalesChart" style="margin-top:16px"></div>
 
     <div class="afp-progress-wrap">
-      <div class="afp-progress-top"><strong>🏆 Nível: ${curLevel.lbl}</strong><span style="font-size:12px;color:var(--g3lt)">${confirmedSales.length} vendas confirmadas</span></div>
+      <div class="afp-progress-top"><strong>🏆 Nível: ${curLevel.lbl}</strong><span style="font-size:12px;color:var(--g3lt)">${confirmedCount} vendas confirmadas</span></div>
       <div class="afp-progress-bar"><div class="afp-progress-fill" style="width:${progressPct}%"></div></div>
-      <div class="afp-progress-hint">${nextLevel?`Faltam <strong>${nextLevel.n-confirmedSales.length}</strong> vendas para o nível ${nextLevel.lbl}`:'Nível máximo atingido! 🎉'}</div>
+      <div class="afp-progress-hint">${nextLevel?`Faltam <strong>${nextLevel.n-confirmedCount}</strong> vendas para o nível ${nextLevel.lbl}`:'Nível máximo atingido! 🎉'}</div>
       <div class="afp-badge-row">
-        ${levels.slice(1).map(l=>`<div class="afp-badge ${confirmedSales.length>=l.n?'earned':''}">${confirmedSales.length>=l.n?'✅':'🔒'} ${l.lbl}</div>`).join('')}
+        ${levels.slice(1).map(l=>`<div class="afp-badge ${confirmedCount>=l.n?'earned':''}">${confirmedCount>=l.n?'✅':'🔒'} ${l.lbl}</div>`).join('')}
       </div>
     </div>
 
@@ -2184,7 +2257,8 @@ function renderAffDash(codeOverride){
 
     <p style="font-size:12px;color:var(--g3lt);margin-top:16px;text-align:center">Os valores actualizam automaticamente conforme as vendas vão sendo confirmadas pelo admin.</p>
     `;
-    renderSalesChart('affSalesChart', sales);
+    const chartData = confirmedDates.map(d=>({status:'confirmed', date:d}));
+    renderSalesChart('affSalesChart', chartData);
   });
 }
 
@@ -2374,44 +2448,55 @@ function delAffiliate(affId){
 
 /* ── WITHDRAWALS (SAQUES) ── */
 function getAffPendingCommission(code){
-  const a=S.affiliates.find(x=>x.code===code);if(!a)return 0;
-  const sales=S.orders.filter(o=>o.affCode===code);
-  const confirmedSales=sales.filter(o=>o.status==='confirmed'||o.status==='delivered');
-  const totalCommission=confirmedSales.reduce((s,o)=>s+(o.affCommission||0),0);
-  const paidSoFar=a.paidTotal||0;
-  const pendingRequests=S.withdrawals.filter(w=>w.affCode===code&&w.status==='pending').reduce((s,w)=>s+w.amount,0);
-  return totalCommission - paidSoFar - pendingRequests;
+  const a=S.affiliates.find(x=>x.code===code);
+  if(!a) return Promise.resolve(0);
+  return AFF_STATS_COL.doc(code).get().then(function(snap){
+    const stats = snap.exists ? snap.data() : {totalCommission:0};
+    const totalCommission = stats.totalCommission||0;
+    const paidSoFar=a.paidTotal||0;
+    const pendingRequests=S.withdrawals.filter(w=>w.affCode===code&&w.status==='pending').reduce((s,w)=>s+w.amount,0);
+    return totalCommission - paidSoFar - pendingRequests;
+  }).catch(function(err){
+    console.error('Erro ao calcular comissão disponível.', err);
+    return 0;
+  });
 }
 function openWithdrawModal(code){
-  const available=getAffPendingCommission(code);
-  if(available<MIN_WITHDRAWAL){toast(`⚠️ Precisas de pelo menos ${fmt(MIN_WITHDRAWAL)} Kz de comissão disponível para sacar`,'tr');return;}
-  document.getElementById('wdAmount').value='';
-  document.getElementById('wdAmount').max=available;
-  document.getElementById('wdAmount').min=MIN_WITHDRAWAL;
-  document.getElementById('wdAmount').dataset.affCode=code;
-  document.getElementById('wdMaxHint').textContent=`Disponível: ${fmt(available)} Kz · Saque mínimo: ${fmt(MIN_WITHDRAWAL)} Kz`;
-  document.getElementById('ovWithdrawReq').classList.add('open');
+  getAffPendingCommission(code).then(function(available){
+    if(available<MIN_WITHDRAWAL){toast(`⚠️ Precisas de pelo menos ${fmt(MIN_WITHDRAWAL)} Kz de comissão disponível para sacar`,'tr');return;}
+    document.getElementById('wdAmount').value='';
+    document.getElementById('wdAmount').max=available;
+    document.getElementById('wdAmount').min=MIN_WITHDRAWAL;
+    document.getElementById('wdAmount').dataset.affCode=code;
+    document.getElementById('wdMaxHint').textContent=`Disponível: ${fmt(available)} Kz · Saque mínimo: ${fmt(MIN_WITHDRAWAL)} Kz`;
+    document.getElementById('ovWithdrawReq').classList.add('open');
+  });
 }
 let S_isSubmittingWithdraw = false;
 function submitWithdrawRequest(){
   if(S_isSubmittingWithdraw){toast('⏳ O teu pedido já está a ser enviado, aguarda um instante...','tv');return;}
   const code=document.getElementById('wdAmount').dataset.affCode;
   const amount=parseFloat(document.getElementById('wdAmount').value);
-  const available=getAffPendingCommission(code);
   if(!amount||amount<=0||!isFinite(amount)){toast('⚠️ Insere um valor válido','tr');return;}
   if(amount<MIN_WITHDRAWAL){toast(`⚠️ O valor mínimo de saque é ${fmt(MIN_WITHDRAWAL)} Kz`,'tr');return;}
-  if(amount>available){toast('⚠️ Valor superior ao disponível ('+fmt(available)+' Kz)','tr');return;}
   S_isSubmittingWithdraw = true;
-  const aff=S.affiliates.find(a=>a.code===code);
-  const wd={id:'wd'+genRef(),affCode:code,affName:aff?aff.name:code,amount,status:'pending',date:new Date().toLocaleString('pt-AO')};
-  createWithdrawal(wd).then(function(){
-    closeOv('ovWithdrawReq');
-    toast('✅ Pedido de saque enviado! Aguarda aprovação.','tg');
-  }).catch(function(e){
-    console.error('Erro ao enviar pedido de saque.',e);
-    toast('⚠️ Não foi possível enviar o pedido','tr');
-  }).finally(function(){
-    S_isSubmittingWithdraw = false;
+  getAffPendingCommission(code).then(function(available){
+    if(amount>available){
+      toast('⚠️ Valor superior ao disponível ('+fmt(available)+' Kz)','tr');
+      S_isSubmittingWithdraw = false;
+      return;
+    }
+    const aff=S.affiliates.find(a=>a.code===code);
+    const wd={id:'wd'+genRef(),affCode:code,affName:aff?aff.name:code,amount,status:'pending',date:new Date().toLocaleString('pt-AO')};
+    createWithdrawal(wd).then(function(){
+      closeOv('ovWithdrawReq');
+      toast('✅ Pedido de saque enviado! Aguarda aprovação.','tg');
+    }).catch(function(e){
+      console.error('Erro ao enviar pedido de saque.',e);
+      toast('⚠️ Não foi possível enviar o pedido','tr');
+    }).finally(function(){
+      S_isSubmittingWithdraw = false;
+    });
   });
 }
 function renderWithdrawHistoryForAff(code){
@@ -3066,6 +3151,28 @@ function openConfirm(id){
   if(deliveryValue){prev.style.display='block';prev.innerHTML=`<strong>Link(s) do produto:</strong><br>${escHtml(deliveryValue).replace(/\n/g,'<br>')}`;}else{prev.style.display='none';}
   document.getElementById('ovConfirm').classList.add('open');
 }
+function recomputeAffStats(affCode){
+  if(!affCode) return;
+  const sales = S.orders.filter(o=>o.affCode===affCode);
+  const confirmedSales = sales.filter(o=>o.status==='confirmed'||o.status==='delivered');
+  const pendingSales = sales.filter(o=>o.status==='pending');
+  const totalCommission = confirmedSales.reduce((s,o)=>s+(o.affCommission||0),0);
+  const confirmedDates = confirmedSales.map(o=>o.date);
+  AFF_STATS_COL.doc(affCode).set({
+    affCode: affCode,
+    confirmedCount: confirmedSales.length,
+    pendingCount: pendingSales.length,
+    totalCommission: totalCommission,
+    confirmedDates: confirmedDates,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function(err){
+    console.error('Erro ao actualizar estatísticas do afiliado.', err);
+  });
+}
+function recomputeAllAffStats(){
+  (S.affiliates||[]).forEach(a=>recomputeAffStats(a.code));
+  toast('🔄 Estatísticas de todos os afiliados a actualizar...','tv');
+}
 function doConfirm(){
   const o=S.curOrder,link=document.getElementById('deliveryIn').value.trim()||S.products.find(p=>p.id===o.productId)?.link||'';
   if(!link){toast('⚠️ Adiciona um link de entrega','tr');return;}
@@ -3074,6 +3181,7 @@ function doConfirm(){
     toast('✅ Confirmado! A enviar email...','tg');
     sendDeliveryEmail({...o, deliveryLink:link});
     autoMarkRecovered(o.email);
+    if(o.affCode) recomputeAffStats(o.affCode);
   }).catch(function(e){
     console.error('Erro ao confirmar pedido.',e);
     toast('⚠️ Não foi possível confirmar o pedido','tr');
@@ -3108,6 +3216,7 @@ function markDel(id){
   const o=S.orders.find(x=>x.id===id);if(!o)return;
   updateOrder(o._docId||o.id, {status:'delivered'}).then(function(){
     toast('📨 Marcado como entregue','tg');
+    if(o.affCode) recomputeAffStats(o.affCode);
   }).catch(function(e){
     console.error('Erro ao marcar como entregue.',e);
     toast('⚠️ Não foi possível actualizar o pedido','tr');
