@@ -1312,7 +1312,7 @@ function startListening(){
   }, function(err){
     console.error('Erro a sincronizar com a base de dados.', err);
     forceHideLoader();
-    toast('⚠️ Sem ligação à base de dados','tr');
+    toast('⚠️ ERRO: '+err.code+' | '+err.message,'tr');
   });
 }
 
