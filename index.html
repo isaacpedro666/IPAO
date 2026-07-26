@@ -3498,12 +3498,17 @@ function tryLogin(){
     document.getElementById('loginErr').classList.remove('show');
     document.getElementById('adminPass').value='';
     btn.disabled=false;btn.textContent='Entrar no Painel';
-    startListeningOrders();
-    startListeningAffRequests();
-    startListeningWithdrawals();
-    startListeningAbandoned();
-    startListeningFeedback();
-    goTo('admin');renderAdmin();
+    try{
+      startListeningOrders();
+      startListeningAffRequests();
+      startListeningWithdrawals();
+      startListeningAbandoned();
+      startListeningFeedback();
+      goTo('admin');renderAdmin();
+    }catch(e){
+      alert('ERRO PÓS-LOGIN: '+e.message+' | linha: '+(e.stack||'').split('\n')[1]);
+      console.error(e);
+    }
     hideLoader();
   }).catch(function(err){
     btn.disabled=false;btn.textContent='Entrar no Painel';
