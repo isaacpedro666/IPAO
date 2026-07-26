@@ -54,6 +54,324 @@ src="https://www.facebook.com/tr?id=2233461574096804&ev=PageView&noscript=1"
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- FIREBASE CONFIGURATION & INTEGRATION -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, addDoc, query, where, serverTimestamp, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+// ═══ CONFIGURAÇÃO FIREBASE - SUBSTITUI COM OS TEUS VALORES ═══
+// Configuração Firebase já está incluída no fim do ficheiro
+// Verifica a linha 1531 para a configuração ativa
+
+// Disponível globalmente
+window.auth = auth;
+window.db = db;
+
+// ═══════════════════════════════════════════════════════════════════════
+// FUNÇÃO: Verificar se é Admin
+// ═══════════════════════════════════════════════════════════════════════
+function isUserAdmin() {
+  const user = auth.currentUser;
+  return user && user.email === 'ip9481515@gmail.com';
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// AUTENTICAÇÃO - LOGIN
+// ═══════════════════════════════════════════════════════════════════════
+window.adminLogin = async function(email, password) {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log('✅ Login bem-sucedido:', userCredential.user.email);
+    
+    if (isUserAdmin()) {
+      console.log('✅ Admin autenticado!');
+      showAdminPanel();
+    }
+    return true;
+  } catch (error) {
+    console.error('❌ Erro ao fazer login:', error.message);
+    alert('Erro: ' + error.message);
+    return false;
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// AUTENTICAÇÃO - LOGOUT
+// ═══════════════════════════════════════════════════════════════════════
+window.adminLogout = async function() {
+  try {
+    await signOut(auth);
+    console.log('✅ Logout bem-sucedido');
+    hideAdminPanel();
+  } catch (error) {
+    console.error('❌ Erro ao fazer logout:', error.message);
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// MONITORIZAR AUTENTICAÇÃO EM TEMPO REAL
+// ═══════════════════════════════════════════════════════════════════════
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log('👤 Utilizador autenticado:', user.email);
+    if (user.email === 'ip9481515@gmail.com') {
+      showAdminPanel();
+    }
+  } else {
+    console.log('👤 Sem utilizador autenticado');
+    hideAdminPanel();
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// PRODUTOS - LER (qualquer pessoa consegue)
+// ═══════════════════════════════════════════════════════════════════════
+window.loadProducts = async function() {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'products'));
+    const products = [];
+    
+    querySnapshot.forEach((doc) => {
+      products.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    
+    console.log('✅ Produtos carregados:', products.length);
+    displayProducts(products);
+    return products;
+  } catch (error) {
+    console.error('❌ Erro ao carregar produtos:', error.message);
+    alert('Erro ao carregar produtos');
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// PRODUTOS - CRIAR (apenas admin)
+// ═══════════════════════════════════════════════════════════════════════
+window.createProduct = async function(productData) {
+  try {
+    if (!isUserAdmin()) {
+      alert('❌ Apenas admins conseguem criar produtos!');
+      return false;
+    }
+    
+    if (!productData.title || !productData.price || !productData.category) {
+      alert('❌ Título, preço e categoria são obrigatórios');
+      return false;
+    }
+    
+    const docRef = await addDoc(collection(db, 'products'), {
+      title: productData.title,
+      price: parseFloat(productData.price),
+      category: productData.category,
+      description: productData.description || '',
+      image: productData.image || '',
+      createdAt: new Date(),
+      sales: 0,
+      rating: 5
+    });
+    
+    console.log('✅ Produto criado com ID:', docRef.id);
+    alert('✅ Produto criado com sucesso!');
+    await loadProducts();
+    return true;
+  } catch (error) {
+    console.error('❌ Erro ao criar produto:', error.message);
+    alert('❌ Erro: ' + error.message);
+    return false;
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// PEDIDOS - CRIAR
+// ═══════════════════════════════════════════════════════════════════════
+window.createOrder = async function(productId, price) {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      alert('❌ Tens de estar autenticado para comprar');
+      return false;
+    }
+    
+    const docRef = await addDoc(collection(db, 'orders'), {
+      userId: user.uid,
+      productId: productId,
+      price: parseFloat(price),
+      status: 'pending',
+      timestamp: serverTimestamp(),
+      paymentMethod: null,
+      paymentReference: null
+    });
+    
+    console.log('✅ Pedido criado com ID:', docRef.id);
+    alert('✅ Pedido criado! ID: ' + docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error('❌ Erro ao criar pedido:', error.message);
+    alert('❌ Erro: ' + error.message);
+    return false;
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// PEDIDOS - LER (apenas utilizador seus próprios)
+// ═══════════════════════════════════════════════════════════════════════
+window.getUserOrders = async function() {
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      alert('❌ Tens de estar autenticado');
+      return [];
+    }
+    
+    const q = query(collection(db, 'orders'), where('userId', '==', user.uid));
+    const querySnapshot = await getDocs(q);
+    const orders = [];
+    
+    querySnapshot.forEach((doc) => {
+      orders.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    
+    console.log('✅ Pedidos carregados:', orders.length);
+    return orders;
+  } catch (error) {
+    console.error('❌ Erro ao carregar pedidos:', error.message);
+    return [];
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// UI - Mostrar Painel Admin
+// ═══════════════════════════════════════════════════════════════════════
+function showAdminPanel() {
+  const panel = document.getElementById('adminCreatePanel');
+  const loginForm = document.getElementById('adminLoginForm');
+  if (panel) panel.style.display = 'block';
+  if (loginForm) loginForm.style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// UI - Esconder Painel Admin
+// ═══════════════════════════════════════════════════════════════════════
+function hideAdminPanel() {
+  const panel = document.getElementById('adminCreatePanel');
+  const loginForm = document.getElementById('adminLoginForm');
+  if (panel) panel.style.display = 'none';
+  if (loginForm) loginForm.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// UI - Mostrar Produtos
+// ═══════════════════════════════════════════════════════════════════════
+function displayProducts(products) {
+  const container = document.getElementById('storeGrid');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  products.forEach(product => {
+    const card = document.createElement('div');
+    card.className = 'pcard pcard-enter';
+    card.innerHTML = `
+      <div class="pcard-thumb">
+        <img src="${product.image || '📦'}" alt="${product.title}" onerror="this.textContent='📦'">
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-title">${product.title}</div>
+        <div class="pcard-desc">${product.description || 'Produto digital de qualidade'}</div>
+        <div class="pcard-meta">
+          <span>⭐ ${product.rating || 5}</span>
+          <span>📊 ${product.sales || 0} vendas</span>
+        </div>
+        <div class="pcard-footer">
+          <div class="pcard-price">${product.price} AKZ</div>
+          <button class="btn bv" onclick="buyProduct('${product.id}', ${product.price})">Comprar</button>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// COMPRA - Wrapper para criar pedido
+// ═══════════════════════════════════════════════════════════════════════
+window.buyProduct = async function(productId, price) {
+  const user = auth.currentUser;
+  if (!user) {
+    alert('❌ Tens de fazer login para comprar
+
+Por favor, regista-te ou faz login primeiro.');
+    return;
+  }
+  
+  const orderId = await createOrder(productId, price);
+  if (orderId) {
+    alert('✅ Pedido criado com sucesso!\n\nID do Pedido: ' + orderId);
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// HANDLE - Formulário de Login Admin
+// ═══════════════════════════════════════════════════════════════════════
+window.handleAdminLogin = async function(event) {
+  event.preventDefault();
+  const email = document.getElementById('adminEmail').value;
+  const password = document.getElementById('adminPassword').value;
+  
+  const success = await adminLogin(email, password);
+  if (success) {
+    document.getElementById('adminLoginForm').reset();
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// HANDLE - Formulário Criar Produto
+// ═══════════════════════════════════════════════════════════════════════
+window.handleCreateProduct = async function(event) {
+  event.preventDefault();
+  
+  if (!isUserAdmin()) {
+    alert('❌ Apenas admins!');
+    return;
+  }
+  
+  const productData = {
+    title: document.getElementById('productTitle').value,
+    price: document.getElementById('productPrice').value,
+    category: document.getElementById('productCategory').value,
+    description: document.getElementById('productDescription').value,
+    image: document.getElementById('productImage').value
+  };
+  
+  const success = await createProduct(productData);
+  if (success) {
+    event.target.reset();
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// CARREGA PRODUTOS AUTOMATICAMENTE QUANDO A PÁGINA ABRE
+// ═══════════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('🚀 Página carregada - Carregando produtos...');
+  loadProducts();
+});
+
+</script>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -118,7 +436,111 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <!-- ═══ STORE ═══ -->
-<div id="page-store" class="page active">
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- PAINEL DE LOGIN ADMIN -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- BOTÃO FLUTUANTE PARA ATIVAR PAINEL DE ADMIN (Apenas para Admin) -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<button id="adminToggleBtn" style="position: fixed; bottom: 20px; right: 20px; z-index: 499; width: 60px; height: 60px; border-radius: 50%; background: var(--green); border: 2px solid var(--gold); color: #fff; font-size: 24px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(22,163,74,.3); transition: transform .2s, box-shadow .2s; display: none;" onclick="toggleAdminPanel()" title="🔐 Painel do Admin">
+  🔐
+</button>
+
+<script>
+// Apenas mostra o botão se o utilizador for admin
+window.addEventListener('load', function() {
+  // Monitora o estado de autenticação
+  const checkAdminStatus = setInterval(function() {
+    const user = window.auth && window.auth.currentUser;
+    const btn = document.getElementById('adminToggleBtn');
+    
+    if (btn) {
+      // Mostra o botão APENAS se o utilizador é admin
+      if (user && user.email === 'ip9481515@gmail.com') {
+        btn.style.display = 'block';
+      } else {
+        btn.style.display = 'none';
+      }
+    }
+  }, 500);
+});
+
+// Função para alternar o painel (apenas admin)
+window.toggleAdminPanel = function() {
+  const user = window.auth && window.auth.currentUser;
+  
+  // Verifica se é admin
+  if (!user || user.email !== 'ip9481515@gmail.com') {
+    alert('❌ Este botão é apenas para administradores!');
+    return;
+  }
+  
+  const loginForm = document.getElementById('adminLoginForm');
+  const createPanel = document.getElementById('adminCreatePanel');
+  
+  if (loginForm) {
+    const isHidden = loginForm.style.display === 'none' || loginForm.style.display === '';
+    loginForm.style.display = isHidden ? 'block' : 'none';
+  }
+  
+  if (createPanel && createPanel.style.display !== 'none') {
+    createPanel.style.display = 'none';
+  }
+}
+
+// Efeito hover no botão
+setTimeout(function() {
+  const btn = document.getElementById('adminToggleBtn');
+  if (btn) {
+    btn.addEventListener('mouseenter', function() {
+      this.style.transform = 'scale(1.1)';
+    });
+    btn.addEventListener('mouseleave', function() {
+      this.style.transform = 'scale(1)';
+    });
+  }
+}, 1000);
+</script>
+
+
+  <div id="adminLoginForm" style="position: fixed; top: 80px; right: 20px; z-index: 500; background: var(--card); border: 2px solid var(--green); border-radius: 12px; padding: 20px; max-width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+  <div style="font-size: 12px; font-weight: 700; color: var(--vlt); text-transform: uppercase; margin-bottom: 12px;">🔐 Login Admin</div>
+  <form onsubmit="handleAdminLogin(event)">
+    <input type="email" id="adminEmail" placeholder="Email" value="ip9481515@gmail.com" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
+    <input type="password" id="adminPassword" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
+    <button type="submit" class="btn bv" style="width: 100%; margin-top: 10px;">Login</button>
+  </form>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- PAINEL DE CRIAR PRODUTO (APENAS ADMIN) -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="adminCreatePanel" style="display: none; position: fixed; top: 80px; right: 20px; z-index: 500; background: var(--card); border: 2px solid var(--green); border-radius: 12px; padding: 20px; max-width: 350px; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+    <div style="font-size: 12px; font-weight: 700; color: var(--vlt); text-transform: uppercase;">⚙️ Painel Admin</div>
+    <button onclick="adminLogout()" style="background: var(--red); color: #fff; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 700;">Sair</button>
+  </div>
+  
+  <div style="border-bottom: 1px solid var(--g1); padding-bottom: 16px; margin-bottom: 16px;">
+    <h3 style="font-size: 16px; margin-bottom: 12px; color: #fff;">Criar Novo Produto</h3>
+    <form onsubmit="handleCreateProduct(event)">
+      <input type="text" id="productTitle" placeholder="Título do Produto" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
+      <input type="number" id="productPrice" placeholder="Preço (em Kwanzas)" step="100" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
+      <input type="text" id="productCategory" placeholder="Categoria" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
+      <textarea id="productDescription" placeholder="Descrição" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff; min-height: 60px;"></textarea>
+      <input type="url" id="productImage" placeholder="URL da Imagem (opcional)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;">
+      <button type="submit" class="btn bv" style="width: 100%;">✅ Criar Produto</button>
+    </form>
+  </div>
+  
+  <div style="font-size: 12px; color: var(--g3lt); text-align: center;">
+    ✅ Admin autenticado<br>
+    Email: ip9481515@gmail.com
+  </div>
+</div>
+
+
+  <div id="page-store" class="page active">
   <div class="hero">
     <div class="hero-glow"></div>
     <div class="hero-inner">
