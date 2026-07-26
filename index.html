@@ -4296,8 +4296,8 @@ setupCheckoutValidation();
 
 // Acesso admin via código secreto no URL (?chave=2002Objectivo#Isaac)
 (function(){
-  var params = new URLSearchParams(window.location.search);
-  if(params.get('chave') === '2002Objectivo#Isaac'){
+  var fullUrl = window.location.href;
+  if(fullUrl.indexOf('chave=2002Objectivo') !== -1 && fullUrl.indexOf('Isaac') !== -1){
     setTimeout(function(){ goAdminArea(); }, 300);
   }
 })();
