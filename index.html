@@ -101,7 +101,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- NAV -->
 <nav class="nav">
-  <div class="nav-logo" onclick="goTo('store')">IP<b> DIGITAL.ao</b></div>
+  <div class="nav-logo" onclick="goTo('store')" id="logoTrigger">IP<b> DIGITAL.ao</b></div>
+<script>
+  (function(){
+    var el=document.getElementById('logoTrigger'), timer=null, fired=false;
+    function start(e){
+      fired=false;
+      timer=setTimeout(function(){ fired=true; if(navigator.vibrate)navigator.vibrate(40); goAdminArea(); }, 3000);
+    }
+    function cancel(e){
+      clearTimeout(timer);
+      if(fired){ e.preventDefault(); e.stopPropagation(); }
+    }
+    el.addEventListener('touchstart', start, {passive:true});
+    el.addEventListener('touchend', cancel);
+    el.addEventListener('touchcancel', cancel);
+    el.addEventListener('mousedown', start);
+    el.addEventListener('mouseup', cancel);
+    el.addEventListener('mouseleave', cancel);
+  })();
+</script>
   <div class="nav-r">
     <button class="btn bg bsm" onclick="openCustomerAuthModal()" id="customerNavBtn">👤 Entrar</button>
     <button class="btn bg bsm" onclick="openAffRequestModal()" id="navAffBtn">🤝 Ser Afiliado</button>
@@ -124,109 +143,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- ═══ STORE ═══ -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
-<!-- PAINEL DE LOGIN ADMIN -->
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<!-- BOTÃO FLUTUANTE PARA ATIVAR PAINEL DE ADMIN (Apenas para Admin) -->
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<button id="adminToggleBtn" style="position: fixed; bottom: 20px; right: 20px; z-index: 499; width: 60px; height: 60px; border-radius: 50%; background: var(--green); border: 2px solid var(--gold); color: #fff; font-size: 24px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(22,163,74,.3); transition: transform .2s, box-shadow .2s; display: none;" onclick="toggleAdminPanel()" title="🔐 Painel do Admin">
-  🔐
-</button>
-
-<script>
-// Apenas mostra o botão se o utilizador for admin
-window.addEventListener('load', function() {
-  // Monitora o estado de autenticação
-  const checkAdminStatus = setInterval(function() {
-    const user = window.auth && window.auth.currentUser;
-    const btn = document.getElementById('adminToggleBtn');
-    
-    if (btn) {
-      // Mostra o botão APENAS se o utilizador é admin
-      if (user && user.email === 'ip9481515@gmail.com') {
-        btn.style.display = 'block';
-      } else {
-        btn.style.display = 'none';
-      }
-    }
-  }, 500);
-});
-
-// Função para alternar o painel (apenas admin)
-window.toggleAdminPanel = function() {
-  const user = window.auth && window.auth.currentUser;
-  
-  // Verifica se é admin
-  if (!user || user.email !== 'ip9481515@gmail.com') {
-    alert('❌ Este botão é apenas para administradores!');
-    return;
-  }
-  
-  const loginForm = document.getElementById('adminLoginForm');
-  const createPanel = document.getElementById('adminCreatePanel');
-  
-  if (loginForm) {
-    const isHidden = loginForm.style.display === 'none' || loginForm.style.display === '';
-    loginForm.style.display = isHidden ? 'block' : 'none';
-  }
-  
-  if (createPanel && createPanel.style.display !== 'none') {
-    createPanel.style.display = 'none';
-  }
-}
-
-// Efeito hover no botão
-setTimeout(function() {
-  const btn = document.getElementById('adminToggleBtn');
-  if (btn) {
-    btn.addEventListener('mouseenter', function() {
-      this.style.transform = 'scale(1.1)';
-    });
-    btn.addEventListener('mouseleave', function() {
-      this.style.transform = 'scale(1)';
-    });
-  }
-}, 1000);
-</script>
-
-
-  <div id="adminLoginForm" style="position: fixed; top: 80px; right: 20px; z-index: 500; background: var(--card); border: 2px solid var(--green); border-radius: 12px; padding: 20px; max-width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
-  <div style="font-size: 12px; font-weight: 700; color: var(--vlt); text-transform: uppercase; margin-bottom: 12px;">🔐 Login Admin</div>
-  <form onsubmit="handleAdminLogin(event)">
-    <input type="email" id="adminEmail" placeholder="Email" value="ip9481515@gmail.com" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
-    <input type="password" id="adminPassword" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
-    <button type="submit" class="btn bv" style="width: 100%; margin-top: 10px;">Login</button>
-  </form>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<!-- PAINEL DE CRIAR PRODUTO (APENAS ADMIN) -->
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<div id="adminCreatePanel" style="display: none; position: fixed; top: 80px; right: 20px; z-index: 500; background: var(--card); border: 2px solid var(--green); border-radius: 12px; padding: 20px; max-width: 350px; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-    <div style="font-size: 12px; font-weight: 700; color: var(--vlt); text-transform: uppercase;">⚙️ Painel Admin</div>
-    <button onclick="adminLogout()" style="background: var(--red); color: #fff; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 700;">Sair</button>
-  </div>
-  
-  <div style="border-bottom: 1px solid var(--g1); padding-bottom: 16px; margin-bottom: 16px;">
-    <h3 style="font-size: 16px; margin-bottom: 12px; color: #fff;">Criar Novo Produto</h3>
-    <form onsubmit="handleCreateProduct(event)">
-      <input type="text" id="productTitle" placeholder="Título do Produto" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
-      <input type="number" id="productPrice" placeholder="Preço (em Kwanzas)" step="100" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
-      <input type="text" id="productCategory" placeholder="Categoria" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;" required>
-      <textarea id="productDescription" placeholder="Descrição" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff; min-height: 60px;"></textarea>
-      <input type="url" id="productImage" placeholder="URL da Imagem (opcional)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--g2); border-radius: 6px; background: var(--off); color: #fff;">
-      <button type="submit" class="btn bv" style="width: 100%;">✅ Criar Produto</button>
-    </form>
-  </div>
-  
-  <div style="font-size: 12px; color: var(--g3lt); text-align: center;">
-    ✅ Admin autenticado<br>
-    Email: ip9481515@gmail.com
-  </div>
-</div>
-
-
   <div id="page-store" class="page active">
   <div class="hero">
     <div class="hero-glow"></div>
