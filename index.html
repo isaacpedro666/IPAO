@@ -982,6 +982,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <input class="fi" type="number" id="pComparePrice" placeholder="Ex: 7000 (opcional)" oninput="updateDiscountPreview()">
           <div class="fhint" id="discountPreview" style="color:var(--vlt);font-weight:700"></div>
         </div>
+        <div class="fg"><label class="fl">🤝 Comissão de Afiliado (%)</label><input class="fi" type="number" id="pCommissionPct" min="0" max="100" placeholder="Ex: 60 (deixa vazio para usar a comissão padrão)"><div class="fhint">Se deixares vazio, é usada a comissão padrão da plataforma (<span id="pCommissionDefaultHint"></span>%)</div></div>
         <div class="fg"><label class="fl">Link de Entrega</label><input class="fi" type="url" id="pLink" placeholder="https://drive.google.com/..."></div>
         <div class="fg" style="grid-column:1/-1"><label class="fl">📁 Link de Materiais de Publicidade (para afiliados)</label><input class="fi" type="url" id="pAdLink" placeholder="https://drive.google.com/pasta-de-criativos..."></div>
         <div class="fg" style="grid-column:1/-1">
@@ -1001,7 +1002,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="fg"><label class="fl">📊 Nível</label><select class="fi" id="pLevel"><option value="">Não definido</option><option value="Iniciante">Iniciante</option><option value="Intermédio">Intermédio</option><option value="Avançado">Avançado</option><option value="Todos os níveis">Todos os níveis</option></select></div>
         <div class="fg"><label class="fl">📄 Formato / Duração</label><input class="fi" type="text" id="pFormat" placeholder="Ex: PDF · 80 páginas ou Vídeo · 3h30"></div>
         <div class="fg" style="grid-column:1/-1"><label class="fl">❓ Perguntas Frequentes (uma por linha, formato Pergunta | Resposta)</label><textarea class="fi" id="pFaq" rows="4" placeholder="Como recebo o produto? | Recebes por email após confirmação do pagamento.&#10;Posso pedir reembolso? | Sim, tens 7 dias de garantia."></textarea></div>
-        <div class="fg" style="grid-column:1/-1"><label class="fl">✅ Prints de Pagamento Confirmado (opcional, até 3 URLs, uma por linha)</label><textarea class="fi" id="pPaymentProofs" rows="2" placeholder="https://exemplo.com/print1.jpg&#10;https://exemplo.com/print2.jpg"></textarea><div class="fhint">Aparecem discretamente no cashout como prova de pagamentos reais. Usa poucas — 1 a 3 — para não parecer exagerado.</div></div>
+        <div class="fg" style="grid-column:1/-1">
+          <label class="fl">✅ Prints de Pagamento Confirmado (opcional, até 3 imagens)</label>
+          <div id="payProofThumbs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"></div>
+          <div class="upload-zone" id="payProofUploadZone" onclick="document.getElementById('file-payProof').click()">
+            <input type="file" id="file-payProof" accept="image/*" multiple style="display:none" onchange="handlePayProofFiles(this)">
+            <div>📤 Clica para carregar imagem(ns) do comprovativo</div>
+          </div>
+          <div class="fhint">Carrega a imagem diretamente (recomendado — abre sempre, mesmo em links que não deixam ver a imagem direta). Aparecem discretamente no cashout como prova de pagamentos reais. Usa poucas — 1 a 3 — para não parecer exagerado.</div>
+        </div>
         <div class="fg" style="grid-column:1/-1"><label class="fl">🚀 Acelerador de Resultados (Order Bump)</label><select class="fi" id="pBumpProduct" onchange="document.getElementById('pBumpDiscountWrap').style.display=this.value?'block':'none'"><option value="">Nenhum — sem oferta extra no checkout</option></select><div class="fhint">Quando alguém compra este produto, é oferecido este outro com desconto, apresentado como "acelerador de resultados"</div></div>
         <div class="fg" id="pBumpDiscountWrap" style="display:none"><label class="fl">Desconto no acelerador (%)</label><input class="fi" type="number" id="pBumpDiscount" min="1" max="90" placeholder="30"></div>
         <div class="fg" style="grid-column:1/-1"><label class="fl">🎯 Produto Recomendado após a Compra</label><select class="fi" id="pUpsellProduct"><option value="">Nenhum — mostra sugestões automáticas da mesma categoria</option></select><div class="fhint">Assim que o cliente compra este produto, este é o produto em destaque logo na página "Pedido Enviado" — a melhor altura para um upsell, porque o cliente acabou de confirmar que confia em ti</div></div>
@@ -1211,6 +1220,9 @@ function forceHideLoader(){
 const MAX_PRODUCTS = 10;
 const MAX_AFFILIATES = 100;
 const AFFILIATE_COMMISSION_PCT = 60;
+function getCommissionPct(prod){
+  return (prod && prod.commissionPct!=null && prod.commissionPct!=='') ? prod.commissionPct : AFFILIATE_COMMISSION_PCT;
+}
 const MIN_WITHDRAWAL = 1000;
 const ADMIN_EMAIL = 'ip9481515@gmail.com';
 
@@ -1241,7 +1253,8 @@ const PRODUCT_VIEWS_COL = db.collection('visualizacoesProduto');
 const CHECKOUT_STARTS_COL = db.collection('checkoutsIniciados');
 
 const EMAILJS_SERVICE_ID = 'service_fxvskeq';
-const EMAILJS_TEMPLATE_ID = 'template_n9ift3r';
+const EMAILJS_TEMPLATE_ID = 'template_n9ift3r'; // template de ENTREGA — enviado só ao cliente, só depois de confirmares o pagamento
+const EMAILJS_ADMIN_TEMPLATE_ID = 'TROCA_PELO_TEU_TEMPLATE_DE_ADMIN'; // template de AVISO — enviado a ti quando chega um pedido novo (ainda pendente). Cria este template no EmailJS com um texto tipo "Novo pedido recebido — aguarda confirmação" e cola aqui o ID dele.
 const EMAILJS_PUBLIC_KEY = '_R5PHSbcHjK1SjOJK';
 emailjs.init({publicKey: EMAILJS_PUBLIC_KEY});
 
@@ -1993,7 +2006,10 @@ function goAdminArea(){
 function renderStore(){
   const g=document.getElementById('storeGrid');
   const affSub=document.getElementById('affCtaSub');
-  if(affSub) affSub.textContent = `Promove os nossos produtos com o teu link exclusivo e ganha ${AFFILIATE_COMMISSION_PCT}% de comissão em cada venda confirmada.`;
+  if(affSub){
+    const maxPct = S.products && S.products.length ? Math.max(...S.products.map(p=>getCommissionPct(p)), AFFILIATE_COMMISSION_PCT) : AFFILIATE_COMMISSION_PCT;
+    affSub.textContent = `Promove os nossos produtos com o teu link exclusivo e ganha até ${maxPct}% de comissão em cada venda confirmada.`;
+  }
   if(!S.products.length){
     g.innerHTML='<div class="empty" style="grid-column:1/-1"><div class="ei">📦</div><p>Nenhum produto disponível.</p></div>';
     updateHero(); updateSales();
@@ -2439,8 +2455,7 @@ function goToCashout(){
   }
 
   const proofSection = document.getElementById('cashProofSection');
-  const relevantTests = (S.testimonials||[]).filter(t=>t.prod===p.name).slice(0,2);
-  const testsToShow = relevantTests.length ? relevantTests : (S.testimonials||[]).slice(0,2);
+  const testsToShow = (S.testimonials||[]).filter(t=>t.prod===p.name).slice(0,2);
   if(testsToShow.length){
     proofSection.style.display='block';
     document.getElementById('cashProofList').innerHTML = testsToShow.map(t=>{
@@ -2646,7 +2661,7 @@ function submitOrder(){
   if(aff){
     order.affCode = aff.code;
     order.affName = aff.name;
-    order.affCommission = Math.round(finalPrice * AFFILIATE_COMMISSION_PCT / 100);
+    order.affCommission = Math.round(finalPrice * getCommissionPct(S.curProd) / 100);
   }
   const btn=document.getElementById('submitOrderBtn');
   const originalBtnHTML = btn ? btn.innerHTML : '';
@@ -2696,9 +2711,9 @@ function submitOrder(){
   });
 }
 function notifyAdminNewOrder(order){
-  // Notificação para ti (admin) sempre que chega um pedido novo.
-  // Usa o mesmo template de entrega por simplicidade — se quiseres um email diferente
-  // (assunto/texto próprios para ti), cria um novo template no EmailJS e troca o ID abaixo.
+  // Notificação para ti (admin) sempre que chega um pedido novo (ainda PENDENTE, sem pagamento confirmado).
+  // Usa um template EmailJS próprio (EMAILJS_ADMIN_TEMPLATE_ID), separado do template de entrega,
+  // para não usar por engano texto tipo "o teu produto está pronto / pagamento confirmado" nesta notificação.
   const params = {
     to_email: ADMIN_EMAIL,
     to_name: 'Admin',
@@ -2706,7 +2721,7 @@ function notifyAdminNewOrder(order){
     delivery_link: 'Pedido: ' + order.id + ' | Cliente: ' + order.name + ' (' + order.email + ', ' + order.phone + ') | Valor: ' + fmt(order.price) + ' Kz | Método: ' + (order.method==='mx'?'Multicaixa':'Transferência'),
     order_id: order.id
   };
-  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params).catch(function(err){
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_ADMIN_TEMPLATE_ID, params).catch(function(err){
     console.error('Aviso: não foi possível enviar notificação de novo pedido ao admin.', err);
   });
 }
@@ -4173,7 +4188,7 @@ function renderProds(){
       <div style="display:flex;align-items:center;gap:4px"><span style="font-size:10px;font-weight:700;color:var(--g3lt);min-width:70px">🛍️ Pág. Vendas</span><span class="co-url" title="${pgLink}">${pgLink}</span><button class="cp-tiny" onclick="copyTxt('${pgLink}',this)">Copiar</button></div>
       <div style="display:flex;align-items:center;gap:4px"><span style="font-size:10px;font-weight:700;color:var(--vdim);min-width:70px">⚡ Checkout</span><span class="co-url" title="${coLink}">${coLink}</span><button class="cp-tiny" onclick="copyTxt('${coLink}',this)">Copiar</button></div>
     </div>`;
-    return`<tr><td><strong>${escHtml(p.emoji)} ${escHtml(p.name)}</strong><br><span style="font-size:12px;color:var(--g3lt)">${escHtml(p.desc.slice(0,50))}…</span></td><td><span class="badge" style="background:var(--vbg);color:var(--vdim)">${escHtml(p.cat)}</span></td><td><strong>${fmt(p.price)} Kzs</strong></td><td style="font-size:12px;color:var(--g3lt);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.link?escHtml(p.link):'<em>Sem link</em>'}</td><td>${coCell}</td><td style="display:flex;gap:6px"><button class="btn bd bsm" onclick="openProdModal('${p.id}')">✏️</button><button class="btn br bsm" onclick="delProd('${p.id}')">🗑️</button></td></tr>`;
+    return`<tr><td><strong>${escHtml(p.emoji)} ${escHtml(p.name)}</strong><br><span style="font-size:12px;color:var(--g3lt)">${escHtml(p.desc.slice(0,50))}…</span></td><td><span class="badge" style="background:var(--vbg);color:var(--vdim)">${escHtml(p.cat)}</span></td><td><strong>${fmt(p.price)} Kzs</strong><br><span style="font-size:11px;color:var(--g3lt)">🤝 ${getCommissionPct(p)}% comissão${(p.commissionPct==null||p.commissionPct==='')?' (padrão)':''}</span></td><td style="font-size:12px;color:var(--g3lt);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.link?escHtml(p.link):'<em>Sem link</em>'}</td><td>${coCell}</td><td style="display:flex;gap:6px"><button class="btn bd bsm" onclick="openProdModal('${p.id}')">✏️</button><button class="btn br bsm" onclick="delProd('${p.id}')">🗑️</button></td></tr>`;
   }).join('');
 }
 function openProdModal(id){
@@ -4199,7 +4214,9 @@ function openProdModal(id){
     document.getElementById('pDesc').value=p.desc;
     document.getElementById('pPrice').value=p.price;
     document.getElementById('pComparePrice').value=p.comparePrice||'';
-    document.getElementById('pPaymentProofs').value=(p.paymentProofs||[]).join('\n');
+    document.getElementById('pCommissionPct').value=(p.commissionPct!=null && p.commissionPct!=='') ? p.commissionPct : '';
+    S_payProofImgs = (p.paymentProofs||[]).slice(0,3);
+    renderPayProofThumbs();
     document.getElementById('pLink').value=p.link;
     document.getElementById('pAdLink').value=p.adLink||'';
     document.getElementById('pRating').value=p.rating||'';
@@ -4232,7 +4249,9 @@ function openProdModal(id){
       `<div><span style="font-size:10px;font-weight:700;color:var(--vdim);display:block;margin-bottom:2px">⚡ CHECKOUT DIRECTO</span>${genDirectCheckoutLink(p.id)}<button class="cp-tiny" style="margin-top:4px" onclick="copyTxt('${genDirectCheckoutLink(p.id)}',null)">📋 Copiar</button></div>`;
     S._editingProdId=p.id;
   } else {
-    ['pName','pEmoji','pDesc','pPrice','pComparePrice','pLink','pAdLink','pRating','pClients','pFormat','pFaq','pBumpDiscount','pPaymentProofs'].forEach(i=>document.getElementById(i).value='');
+    ['pName','pEmoji','pDesc','pPrice','pComparePrice','pLink','pAdLink','pRating','pClients','pFormat','pFaq','pBumpDiscount','pCommissionPct'].forEach(i=>document.getElementById(i).value='');
+    S_payProofImgs = [];
+    renderPayProofThumbs();
     document.getElementById('pBestSeller').checked=false;
     document.getElementById('pIsNew').checked=false;
     document.getElementById('pLevel').value='';
@@ -4244,6 +4263,7 @@ function openProdModal(id){
     S._editingProdId=null;
   }
   document.getElementById('ovProd').classList.add('open');
+  document.getElementById('pCommissionDefaultHint').textContent = AFFILIATE_COMMISSION_PCT;
   updateDiscountPreview();
 }
 function updateDiscountPreview(){
@@ -4284,8 +4304,14 @@ function saveProd(){
   let upsellProductId = document.getElementById('pUpsellProduct').value;
   // protecção extra: um produto nunca pode recomendar-se a si mesmo após a compra
   if(upsellProductId && upsellProductId === id){ upsellProductId = ''; }
-  const paymentProofs = document.getElementById('pPaymentProofs').value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,3);
-  const data={name,price,comparePrice,emoji:document.getElementById('pEmoji').value||'📦',cat:document.getElementById('pCat').value,desc:document.getElementById('pDesc').value,link:document.getElementById('pLink').value.trim(),adLink:document.getElementById('pAdLink').value.trim(),rating:parseFloat(document.getElementById('pRating').value)||0,clients:parseInt(document.getElementById('pClients').value)||0,bestSeller:document.getElementById('pBestSeller').checked,isNew:document.getElementById('pIsNew').checked,level:document.getElementById('pLevel').value,format:document.getElementById('pFormat').value.trim(),faq,bumpProductId,bumpDiscount,upsellProductId,paymentProofs,checkoutBanner:S_bannerImg||'',img:S.imgs.prod||''};
+  const paymentProofs = S_payProofImgs.slice(0,3);
+  const commissionRaw = document.getElementById('pCommissionPct').value.trim();
+  let commissionPct = '';
+  if(commissionRaw!==''){
+    commissionPct = parseFloat(commissionRaw);
+    if(!isFinite(commissionPct) || commissionPct<0 || commissionPct>100){toast('⚠️ A comissão deve estar entre 0% e 100%','tr');return;}
+  }
+  const data={name,price,comparePrice,commissionPct,emoji:document.getElementById('pEmoji').value||'📦',cat:document.getElementById('pCat').value,desc:document.getElementById('pDesc').value,link:document.getElementById('pLink').value.trim(),adLink:document.getElementById('pAdLink').value.trim(),rating:parseFloat(document.getElementById('pRating').value)||0,clients:parseInt(document.getElementById('pClients').value)||0,bestSeller:document.getElementById('pBestSeller').checked,isNew:document.getElementById('pIsNew').checked,level:document.getElementById('pLevel').value,format:document.getElementById('pFormat').value.trim(),faq,bumpProductId,bumpDiscount,upsellProductId,paymentProofs,checkoutBanner:S_bannerImg||'',img:S.imgs.prod||''};
   let savedId;
   if(id){const i=S.products.findIndex(p=>p.id===id);S.products[i]={...S.products[i],...data};savedId=id;toast('✅ Produto actualizado','tg');}
   else{savedId='p'+Date.now();S.products.push({id:savedId,cashout:'',...data});toast('✅ Produto adicionado! Link gerado.','tg');}
@@ -4385,6 +4411,41 @@ function compressImg(dataUrl, maxPx, quality, cb){
     cb(c.toDataURL('image/webp',quality));
   };
   img.src=dataUrl;
+}
+let S_payProofImgs = [];
+function renderPayProofThumbs(){
+  const box = document.getElementById('payProofThumbs');
+  if(!box) return;
+  box.innerHTML = S_payProofImgs.map((src,i)=>`
+    <div style="position:relative;width:70px;height:90px;border-radius:8px;overflow:hidden;border:1px solid var(--g1)">
+      <img src="${escHtml(src)}" style="width:100%;height:100%;object-fit:cover">
+      <button type="button" onclick="removePayProof(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:1">✕</button>
+    </div>`).join('');
+  const zone = document.getElementById('payProofUploadZone');
+  if(zone) zone.style.display = S_payProofImgs.length>=3 ? 'none' : 'block';
+}
+function handlePayProofFiles(inp){
+  const files = Array.from(inp.files||[]);
+  if(!files.length) return;
+  const remaining = 3 - S_payProofImgs.length;
+  if(remaining<=0){toast('⚠️ Máximo de 3 comprovativos por produto','tr');inp.value='';return;}
+  files.slice(0,remaining).forEach(file=>{
+    if(file.size>5*1024*1024){toast('⚠️ Ficheiro muito grande (máx 5MB)','tr');return;}
+    const reader=new FileReader();
+    reader.onload=e=>{
+      // comprime bastante (imagem pequena, qualidade moderada) porque tudo é guardado num único documento Firestore com limite de ~1MB no total
+      compressImg(e.target.result,480,0.6,function(compressed){
+        S_payProofImgs.push(compressed);
+        renderPayProofThumbs();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  inp.value='';
+}
+function removePayProof(i){
+  S_payProofImgs.splice(i,1);
+  renderPayProofThumbs();
 }
 let S_bannerImg = '';
 function handleBannerFile(inp){
