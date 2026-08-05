@@ -49,7 +49,27 @@ src="https://www.facebook.com/tr?id=2233461574096804&ev=PageView&noscript=1"
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>:root{--black:#0F172A;--card:#1E293B;--card2:#334155;--v:#16A34A;--vlt:#22C55E;--vbtn:#F59E0B;--vxlt:#FEF3C7;--vdim:#92400E;--vbg:#FEF3C7;--white:#fff;--off:#020617;--g1:#334155;--g2:#475569;--g3:#94A3B8;--g3lt:#CBD5E1;--g4:#334155;--green:#16A34A;--greenh:#15803D;--glt:#DCFCE7;--gold:#F59E0B;--goldh:#D97706;--red:#DC2626;--rlt:#FEE2E2;--pagebg:#0F172A;--r:16px;--rsm:10px;--sh:0 2px 16px rgba(2,6,23,.20);--shlg:0 8px 40px rgba(2,6,23,.30);--shv:0 6px 18px rgba(22,163,74,.20)}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Inter',sans-serif;background:var(--pagebg);color:#EDEAF6;font-size:16px;line-height:1.7;overflow-x:hidden}h1,h2,h3,.sec-tit,.hero-aname,.pcard-title,.co-prod-name,.test-name,.login-logo,.nav-logo,.pp-name{font-family:'Fraunces',serif;font-weight:700;font-optical-sizing:auto;letter-spacing:-.01em}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--g2);border-radius:3px}img{display:block;max-width:100%}button,input,select,textarea{font-family:inherit}.mq{background:var(--v);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0px,rgba(255,255,255,.07) 2px,transparent 2px,transparent 14px);padding:9px 0;overflow:hidden;white-space:nowrap}.mq-track{display:inline-flex;animation:mq 24s linear infinite}.mq-item{display:inline-flex;align-items:center;gap:10px;padding:0 28px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#fff}.mq-dot{width:4px;height:4px;background:rgba(255,255,255,.45);border-radius:50%}@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.nav{position:sticky;top:0;z-index:300;background:transparent;border-bottom:1px solid transparent;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4vw,48px);gap:12px;transition:background .28s cubic-bezier(.4,0,.2,1),border-color .28s cubic-bezier(.4,0,.2,1),backdrop-filter .28s cubic-bezier(.4,0,.2,1)}.nav.is-scrolled{background:rgba(15,23,42,.72);border-bottom-color:rgba(255,255,255,.06);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%)}
+<style>:root{--black:#0F172A;--card:#1E293B;--card2:#334155;--v:#16A34A;--vlt:#22C55E;--vbtn:#F59E0B;--vxlt:#FEF3C7;--vdim:#92400E;--vbg:#FEF3C7;--white:#fff;--off:#020617;--g1:#334155;--g2:#475569;--g3:#94A3B8;--g3lt:#CBD5E1;--g4:#334155;--green:#16A34A;--greenh:#15803D;--glt:#DCFCE7;--gold:#F59E0B;--goldh:#D97706;--red:#DC2626;--rlt:#FEE2E2;--pagebg:#0F172A;--r:22px;--r-lg:26px;--rsm:14px;--sh:0 2px 20px rgba(2,6,23,.22),0 1px 3px rgba(2,6,23,.14);--shlg:0 16px 48px rgba(2,6,23,.34),0 4px 14px rgba(2,6,23,.18);--shv:0 8px 22px rgba(22,163,74,.22);--glass-bg:rgba(30,41,59,.62);--glass-brd:rgba(255,255,255,.08)}
+.glass-surface{background:var(--glass-bg);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--glass-brd)}
+.premium-card{background:var(--card);border-radius:var(--r);border:1px solid var(--g1);box-shadow:var(--sh);transition:transform .25s cubic-bezier(.25,.46,.45,.94),box-shadow .25s ease}
+.premium-card:hover{transform:translateY(-3px);box-shadow:var(--shlg)}
+.dash-metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px}
+.dash-metric-card{background:var(--card);border-radius:var(--r);border:1px solid var(--g1);box-shadow:var(--sh);padding:22px 20px;position:relative;overflow:hidden;transition:transform .25s cubic-bezier(.25,.46,.45,.94),box-shadow .25s ease}
+.dash-metric-card:hover{transform:translateY(-4px);box-shadow:var(--shlg)}
+.dash-metric-card::before{content:'';position:absolute;top:-30%;right:-20%;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--dash-glow,rgba(22,163,74,.18)) 0%,transparent 70%);pointer-events:none}
+.dash-metric-ic{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:14px;background:var(--dash-ic-bg,rgba(22,163,74,.16));position:relative;z-index:1}
+.dash-metric-val{font-family:'Fraunces',serif;font-weight:700;font-size:30px;line-height:1;color:#fff;position:relative;z-index:1}
+.dash-metric-lbl{font-size:12px;color:var(--g3lt);margin-top:8px;font-weight:600;position:relative;z-index:1}
+.dash-metric-delta{font-size:11px;font-weight:700;margin-top:8px;display:inline-flex;align-items:center;gap:3px;position:relative;z-index:1}
+.dash-metric-delta.up{color:var(--vlt)}
+.dash-metric-delta.down{color:var(--red)}
+.dash-section-tit{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.dash-section-tit h2{font-family:'Fraunces',serif;font-size:20px;color:#fff}
+.dash-quick-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.dash-quick-btn{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--g1);border-radius:999px;padding:11px 18px;font-size:13px;font-weight:700;color:#EDEAF6;cursor:pointer;transition:all .18s}
+.dash-quick-btn:hover{border-color:var(--vbtn);background:rgba(245,158,11,.1);transform:translateY(-2px)}
+.skel-line{background:linear-gradient(100deg,var(--card) 30%,var(--card2) 50%,var(--card) 70%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;border-radius:8px}
+@media(prefers-reduced-motion:reduce){.skel-line{animation:none}}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Inter',sans-serif;background:var(--pagebg);color:#EDEAF6;font-size:16px;line-height:1.7;overflow-x:hidden}h1,h2,h3,.sec-tit,.hero-aname,.pcard-title,.co-prod-name,.test-name,.login-logo,.nav-logo,.pp-name{font-family:'Fraunces',serif;font-weight:700;font-optical-sizing:auto;letter-spacing:-.01em}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--g2);border-radius:3px}img{display:block;max-width:100%}button,input,select,textarea{font-family:inherit}.mq{background:var(--v);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0px,rgba(255,255,255,.07) 2px,transparent 2px,transparent 14px);padding:9px 0;overflow:hidden;white-space:nowrap}.mq-track{display:inline-flex;animation:mq 24s linear infinite}.mq-item{display:inline-flex;align-items:center;gap:10px;padding:0 28px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#fff}.mq-dot{width:4px;height:4px;background:rgba(255,255,255,.45);border-radius:50%}@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}.nav{position:sticky;top:0;z-index:300;background:transparent;border-bottom:1px solid transparent;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4vw,48px);gap:12px;transition:background .28s cubic-bezier(.4,0,.2,1),border-color .28s cubic-bezier(.4,0,.2,1),backdrop-filter .28s cubic-bezier(.4,0,.2,1)}.nav.is-scrolled{background:rgba(15,23,42,.72);border-bottom-color:rgba(255,255,255,.06);backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%)}
 [data-reveal]{opacity:0;transform:translateY(24px);transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1)}
 [data-reveal].is-visible{opacity:1;transform:translateY(0)}
 @media(prefers-reduced-motion:reduce){[data-reveal]{opacity:1;transform:none;transition:none}}
@@ -123,7 +143,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </nav>
 <div class="mobile-drawer" id="mobileDrawer">
   <ul class="mobile-drawer-links">
-    <li><a href="#secProdutos" class="mobile-drawer-link">Produtos</a></li>
+    <li><a href="#secProdutos" class="mobile-drawer-link">🛍️ Produtos</a></li>
+    <li><a href="#secServicos" class="mobile-drawer-link">💼 Serviços</a></li>
     <li><a href="#secCategorias" class="mobile-drawer-link">Categorias</a></li>
     <li><a href="#secComoFunciona" class="mobile-drawer-link">Como Funciona</a></li>
     <li><a href="#secDepoimentos" class="mobile-drawer-link">Depoimentos</a></li>
@@ -203,6 +224,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="sec-eye">Mais Procurados</div>
     <div class="sec-tit" data-reveal>Produtos Mais Vendidos</div>
     <div class="prod-grid" id="storeGrid"></div>
+  </div>
+
+  <div class="store-wrap" id="secServicos" style="display:none">
+    <div class="sec-eye">💼 Para Empresas e Empreendedores</div>
+    <div class="sec-tit" data-reveal>Os Nossos Serviços</div>
+    <div class="prod-grid" id="servicesGrid"></div>
   </div>
 
   <!-- ═══ CATEGORIAS (conteúdo de exemplo — ajusta às categorias reais) ═══ -->
@@ -407,7 +434,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="pp-badge">⚡ Entrega após confirmação</div>
     </div>
     <div class="urgency" id="ppUrgency" style="display:none">⏳ Oferta termina em <span id="ppCountdownTimer">20:00</span></div>
-    <button class="btn bv blg bfw sticky-buy-hide-trigger" onclick="goToCashout()">Comprar Agora →</button>
+    <button class="btn bv blg bfw sticky-buy-hide-trigger" id="ppMainBtn" onclick="handlePrimaryCta()">Comprar Agora →</button>
+    <button class="btn bo blg bfw" id="ppSecondaryBtn" style="display:none;margin-top:8px" onclick="handleSecondaryCta()">📝 Solicitar Orçamento</button>
     <div class="guarantee-box">
       <span style="font-size:28px">🛡️</span>
       <div><strong>Garantia de 7 dias</strong><p>Se não ficares satisfeito, devolvemos o teu dinheiro sem perguntas.</p></div>
@@ -444,7 +472,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- Botão de compra fixo no rodapé (mobile) — sempre visível ao scrollar -->
   <div class="sticky-buy-bar" id="stickyBuyBar">
     <div class="sticky-buy-info"><div class="sticky-buy-price" id="stickyBuyPrice"></div></div>
-    <button class="btn bv" onclick="goToCashout()">Comprar Agora →</button>
+    <button class="btn bv" id="stickyMainBtn" onclick="handlePrimaryCta()">Comprar Agora →</button>
   </div>
 </div>
 
@@ -733,8 +761,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="adm-wrap">
     <div class="adm-top"><h1>Painel IP Digital AO</h1><button class="btn bo bsm" onclick="doLogout()">Sair →</button></div>
     <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('orders')">📦 Pedidos</button>
+      <button class="tab-btn active" onclick="switchTab('home')">🏠 Início</button>
+      <button class="tab-btn" onclick="switchTab('orders')">📦 Pedidos</button>
       <button class="tab-btn" onclick="switchTab('products')">🛍️ Produtos</button>
+      <button class="tab-btn" onclick="switchTab('services')">💼 Serviços</button>
+      <button class="tab-btn" onclick="switchTab('quotes')">📋 Orçamentos <span id="quotesDueBadge" style="display:none;background:var(--v);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:2px 7px;margin-left:4px"></span></button>
       <button class="tab-btn" onclick="switchTab('clients')">👤 Clientes</button>
       <button class="tab-btn" onclick="switchTab('affiliates')">🤝 Afiliados</button>
       <button class="tab-btn" onclick="switchTab('withdrawals')">💸 Saques</button>
@@ -745,8 +776,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <button class="tab-btn" onclick="switchTab('config')">⚙️ Config</button>
     </div>
 
+    <!-- HOME DASHBOARD -->
+    <div id="tab-home">
+      <div id="adminGreeting" style="margin-bottom:22px"></div>
+      <div class="dash-metric-grid" id="adminDashGrid"></div>
+      <div class="dash-quick-row">
+        <button class="dash-quick-btn" onclick="switchTab('products');openProdModal()">➕ Novo Produto</button>
+        <button class="dash-quick-btn" onclick="switchTab('services');openServiceModal()">➕ Novo Serviço</button>
+        <button class="dash-quick-btn" onclick="switchTab('orders')">📦 Ver Pedidos</button>
+        <button class="dash-quick-btn" onclick="switchTab('quotes')">📋 Ver Orçamentos</button>
+        <button class="dash-quick-btn" onclick="switchTab('affiliates')">🤝 Ver Afiliados</button>
+      </div>
+      <div class="dash-section-tit"><h2>📈 Vendas dos últimos 7 dias</h2></div>
+      <div class="chart-card" id="adminDashChart" style="margin-bottom:28px"></div>
+      <div class="dash-section-tit"><h2>🔔 Precisa da tua atenção</h2></div>
+      <div id="adminDashAlerts" class="premium-card" style="padding:20px 22px"></div>
+    </div>
+
     <!-- ORDERS -->
-    <div id="tab-orders">
+    <div id="tab-orders" style="display:none">
       <div class="stats-grid" id="statsGrid"></div>
       <div class="stats-grid" id="revenueGrid" style="margin-top:-14px"></div>
       <div class="chart-card" id="conversionFunnel"></div>
@@ -759,6 +807,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <div class="tbl-wrap"><table><thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th>Método</th><th>Valor</th><th>Estado</th><th>Data</th><th>Acções</th></tr></thead><tbody id="ordersBody"></tbody></table></div>
       <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn bo bsm" onclick="exportCSV()">📥 CSV</button></div>
+    </div>
+
+    <!-- SERVICES -->
+    <div id="tab-services" style="display:none">
+      <div id="serviceStorageGauge" style="background:var(--card);border:1px solid var(--g1);border-radius:var(--rsm);padding:12px 16px;margin-bottom:18px;font-size:12.5px;color:var(--g3lt)"></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:18px"><button class="btn bv" id="addServiceBtn" onclick="openServiceModal()">+ Novo Serviço</button></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Serviço</th><th>Categoria</th><th>Preço</th><th>Tipo</th><th>Estado</th><th>Afiliados</th><th>Pedidos</th><th>Receita</th><th>Acções</th></tr></thead><tbody id="servicesBody"></tbody></table></div>
+    </div>
+
+    <!-- QUOTE REQUESTS -->
+    <div id="tab-quotes" style="display:none">
+      <p style="font-size:13px;color:var(--g3lt);margin-bottom:16px">Pedidos de orçamento enviados pelos clientes a partir da página de cada serviço.</p>
+      <div class="filters" id="qFilters">
+        <button class="fb active" onclick="filterQ('all',this)">Todos</button>
+        <button class="fb" onclick="filterQ('pending',this)">⏳ Pendentes</button>
+        <button class="fb" onclick="filterQ('respondido',this)">💬 Respondidos</button>
+        <button class="fb" onclick="filterQ('fechado',this)">✅ Fechados</button>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr><th>Cliente</th><th>Serviço</th><th>Briefing</th><th>Estado</th><th>Data</th><th>Acções</th></tr></thead><tbody id="quotesBody"></tbody></table></div>
     </div>
 
     <!-- PRODUCTS -->
@@ -1033,7 +1100,110 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </div>
 
+<!-- MODAL: SERVICE (admin) -->
+<div class="overlay" id="ovService">
+  <div class="modal">
+    <div class="modal-head"><h3 id="serviceTit">Novo Serviço</h3><button class="modal-x" onclick="closeOv('ovService')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="sEditId">
+
+      <div class="fg">
+        <label class="fl">Imagem de Capa</label>
+        <div id="sImgThumb" style="display:none;margin-bottom:8px"><img id="sImgPrev" style="max-width:160px;max-height:110px;border-radius:8px" src=""><br><button type="button" class="btn br bsm" style="margin-top:6px" onclick="removeServiceImg()">Remover</button></div>
+        <div class="upload-zone" id="sImgZone" onclick="document.getElementById('file-sImg').click()">
+          <input type="file" id="file-sImg" accept="image/*" style="display:none" onchange="handleServiceImgFile(this)">
+          <div class="upload-zone-icon">🖼️</div>
+          <p><strong>Clica aqui</strong> para carregar a imagem de capa</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="fg" style="grid-column:1/-1"><label class="fl">Nome do Serviço *</label><input class="fi" type="text" id="sName" placeholder="Ex: Criação de Landing Page"></div>
+        <div class="fg"><label class="fl">Emoji</label><input class="fi" type="text" id="sEmoji" placeholder="💼" maxlength="4"></div>
+        <div class="fg"><label class="fl">Categoria</label><input class="fi" type="text" id="sCat" placeholder="Ex: Design, Marketing, Desenvolvimento"></div>
+        <div class="fg" style="grid-column:1/-1"><label class="fl">Descrição Curta *</label><textarea class="fi" id="sDescShort" rows="2" placeholder="Resumo em 1-2 frases, aparece nos cards de serviço"></textarea></div>
+        <div class="fg" style="grid-column:1/-1"><label class="fl">Descrição Completa</label><textarea class="fi" id="sDescLong" rows="4" placeholder="Descreve o serviço em detalhe — o que está incluído, como funciona, entregáveis..."></textarea></div>
+
+        <div class="fg"><label class="fl">Tipo de Serviço</label>
+          <select class="fi" id="sType" onchange="onServiceTypeChange()">
+            <option value="fixed">💳 Preço Fixo</option>
+            <option value="custom">🧩 Personalizado (sob orçamento)</option>
+            <option value="hybrid">🔀 Híbrido (preço ou orçamento)</option>
+          </select>
+        </div>
+        <div class="fg" id="sPriceWrap"><label class="fl">Preço (Kzs)</label><input class="fi" type="number" id="sPrice" placeholder="15000"></div>
+        <div class="fg" id="sComparePriceWrap"><label class="fl">💸 Preço Promocional (riscado)</label><input class="fi" type="number" id="sComparePrice" placeholder="Ex: 25000 (opcional)"></div>
+
+        <div class="fg"><label class="fl">Botão de Acção</label>
+          <select class="fi" id="sActionButton" onchange="onServiceActionChange()">
+            <option value="buy">🛒 Comprar Agora</option>
+            <option value="quote">📝 Solicitar Orçamento</option>
+            <option value="both">🔀 Ambos</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Destino do Botão</label>
+          <select class="fi" id="sCtaDestino" onchange="document.getElementById('sCtaLinkWrap').style.display=this.value==='link'?'block':'none'">
+            <option value="checkout">💳 Checkout</option>
+            <option value="whatsapp">💬 WhatsApp</option>
+            <option value="form">📋 Formulário (briefing)</option>
+            <option value="link">🔗 Link Personalizado</option>
+          </select>
+        </div>
+        <div class="fg" id="sCtaLinkWrap" style="display:none;grid-column:1/-1"><label class="fl">Link Personalizado</label><input class="fi" type="url" id="sCtaLink" placeholder="https://..."></div>
+
+        <div class="fg" style="grid-column:1/-1;border-top:1px solid var(--g1);padding-top:14px"><label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer"><input type="checkbox" id="sAffAllow" style="width:18px;height:18px" onchange="document.getElementById('sAffFieldsWrap').style.display=this.checked?'block':'none'"> 🤝 Permitir afiliados neste serviço</label></div>
+        <div id="sAffFieldsWrap" style="display:none;grid-column:1/-1">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="fg"><label class="fl">Comissão em %</label><input class="fi" type="number" id="sCommissionPct" min="0" max="100" placeholder="Ex: 30"></div>
+          <div class="fg"><label class="fl">Comissão fixa (Kzs)</label><input class="fi" type="number" id="sCommissionFixed" min="0" placeholder="Deixa vazio para usar %"></div>
+          </div>
+        </div>
+
+        <div class="fg" style="grid-column:1/-1;border-top:1px solid var(--g1);padding-top:14px"><label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer"><input type="checkbox" id="sBriefingOn" style="width:18px;height:18px" onchange="document.getElementById('sBriefingFieldsWrap').style.display=this.checked?'block':'none'"> 📋 Activar briefing (perguntas no pedido de orçamento)</label></div>
+        <div class="fg" id="sBriefingFieldsWrap" style="display:none;grid-column:1/-1"><label class="fl">Campos do briefing (uma pergunta por linha)</label><textarea class="fi" id="sBriefingFields" rows="3" placeholder="Qual é o objectivo do teu negócio?&#10;Tens já um logótipo/identidade visual?&#10;Qual é o teu orçamento aproximado?"></textarea></div>
+
+        <div class="fg"><label class="fl">⏱️ Prazo de Entrega</label><input class="fi" type="text" id="sDeadline" placeholder="Ex: 5 dias úteis"></div>
+        <div class="fg"><label class="fl">🏢 Departamento Responsável</label><input class="fi" type="text" id="sDept" placeholder="Ex: Design"></div>
+
+        <div class="fg" style="grid-column:1/-1;border-top:1px solid var(--g1);padding-top:14px"><div class="sec-sm" style="margin-bottom:4px">🔎 SEO</div></div>
+        <div class="fg" style="grid-column:1/-1"><label class="fl">URL amigável</label><input class="fi" type="text" id="sSeoUrl" placeholder="criacao-landing-page"></div>
+        <div class="fg" style="grid-column:1/-1"><label class="fl">Título SEO</label><input class="fi" type="text" id="sSeoTitle" placeholder="Criação de Landing Page — IP Digital AO"></div>
+        <div class="fg" style="grid-column:1/-1"><label class="fl">Descrição SEO</label><textarea class="fi" id="sSeoDesc" rows="2" placeholder="Landing pages profissionais que convertem, feitas para o mercado angolano."></textarea></div>
+
+        <div class="fg"><label class="fl">Estado</label>
+          <select class="fi" id="sStatus">
+            <option value="published">✅ Publicado</option>
+            <option value="draft">📝 Rascunho</option>
+            <option value="archived">🗄️ Arquivado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bv" style="flex:1" onclick="saveService()">Guardar Serviço</button>
+      <button class="btn bo" style="flex:1" onclick="closeOv('ovService')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: TESTIMONIAL -->
+<div class="overlay" id="ovQuote">
+  <div class="modal">
+    <div class="modal-head"><h3 id="quoteTit">Solicitar Orçamento</h3><button class="modal-x" onclick="closeOv('ovQuote')">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--g3lt);margin-bottom:14px">Preenche os dados abaixo e a nossa equipa entra em contacto contigo com uma proposta.</p>
+      <div class="fg"><label class="fl">Nome *</label><input class="fi" type="text" id="qName" placeholder="O teu nome"></div>
+      <div class="fg"><label class="fl">Email *</label><input class="fi" type="email" id="qEmail" placeholder="email@exemplo.com"></div>
+      <div class="fg"><label class="fl">Telefone *</label><input class="fi" type="tel" id="qPhone" placeholder="923 456 789"></div>
+      <div id="quoteDynFields"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bv" style="flex:1" id="quoteSubmitBtn" onclick="submitQuote()">Enviar Pedido</button>
+      <button class="btn bo" style="flex:1" onclick="closeOv('ovQuote')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="ovTest">
   <div class="modal">
     <div class="modal-head"><h3 id="testTit">Novo Depoimento</h3><button class="modal-x" onclick="closeOv('ovTest')">✕</button></div>
@@ -1223,6 +1393,16 @@ const AFFILIATE_COMMISSION_PCT = 60;
 function getCommissionPct(prod){
   return (prod && prod.commissionPct!=null && prod.commissionPct!=='') ? prod.commissionPct : AFFILIATE_COMMISSION_PCT;
 }
+function calcCommission(item, price){
+  if(!item) return Math.round(price * AFFILIATE_COMMISSION_PCT / 100);
+  if(item.commissionFixed!=null && item.commissionFixed!==''){ return Math.round(parseFloat(item.commissionFixed))||0; }
+  return Math.round(price * getCommissionPct(item) / 100);
+}
+// Procura um item (produto OU serviço) pelo id — usado pelo checkout/cashout partilhado entre os dois catálogos
+function findCatalogItem(id){
+  if(!id) return null;
+  return S.products.find(x=>x.id===id) || (S.services||[]).find(x=>x.id===id) || null;
+}
 const MIN_WITHDRAWAL = 1000;
 const ADMIN_EMAIL = 'ip9481515@gmail.com';
 
@@ -1251,6 +1431,8 @@ const AFF_MISSION_COL = db.collection('afiliadosMissao');
 const STATS_COL = db.collection('estatisticasAfiliados');
 const PRODUCT_VIEWS_COL = db.collection('visualizacoesProduto');
 const CHECKOUT_STARTS_COL = db.collection('checkoutsIniciados');
+const QUOTES_COL = db.collection('pedidosOrcamento');
+const SERVICE_VIEWS_COL = db.collection('visualizacoesServico');
 
 const EMAILJS_SERVICE_ID = 'service_fxvskeq';
 const EMAILJS_TEMPLATE_ID = 'template_n9ift3r'; // template de ENTREGA — enviado só ao cliente, só depois de confirmares o pagamento
@@ -1270,11 +1452,14 @@ const DEFAULT_DATA = {
   ],
   config:{name:'IP Digital AO',role:'Especialista em Marketing Digital · Angola',profileImg:'',mxNum:'923 456 789',mxHold:'IP Digital AO',bnkName:'BFA',iban:'AO06 0000 0000 0000 0000 0000 0',bnkHold:'IP Digital AO',wa:'244923456789',materialsLink:''},
   affiliates:[],
-  updates:[]
+  updates:[],
+  services:[]
 };
 
 const S = {
   products: JSON.parse(JSON.stringify(DEFAULT_DATA.products)),
+  services: [],
+  quoteRequests: [],
   orders: [],
   testimonials: JSON.parse(JSON.stringify(DEFAULT_DATA.testimonials)),
   config: JSON.parse(JSON.stringify(DEFAULT_DATA.config)),
@@ -1291,7 +1476,7 @@ const S = {
   productViewCounts: {},
   checkoutStartCounts: {},
   clientOverrides: {},
-  curProd:null,curOrder:null,payMethod:'mx',loggedIn:false,ref:'',oFilter:'all',aFilter:'all',timerInt:null,
+  curProd:null,curService:null,curOrder:null,payMethod:'mx',loggedIn:false,ref:'',oFilter:'all',aFilter:'all',timerInt:null,
   imgs:{prod:'',profile:''},
   pendingAff:null,
   pendingAffDashCode:null,
@@ -1306,6 +1491,7 @@ function startListening(){
     if(docSnap.exists){
       const data = docSnap.data();
       S.products = (data.products && data.products.length) ? data.products : DEFAULT_DATA.products;
+      S.services = data.services || [];
       S.testimonials = data.testimonials || DEFAULT_DATA.testimonials;
       S.config = {...DEFAULT_DATA.config, ...(data.config||{})};
       S.affiliates = data.affiliates || [];
@@ -1327,9 +1513,11 @@ function startListening(){
     hideLoader();
     renderStore();
     renderTestimonials();
+    renderServices();
     if(!S._viewCountsFetched){ S._viewCountsFetched = true; Promise.all([fetchProductViewCounts(), fetchCheckoutStartCounts()]).then(function(){ renderStore(); }); }
     if(document.getElementById('page-admin').classList.contains('active')) renderAdmin();
     if(document.getElementById('tab-products')?.style.display==='block') renderProds();
+    if(document.getElementById('tab-services')?.style.display==='block') renderServicesAdmin();
     if(document.getElementById('tab-clients')?.style.display==='block') renderClientsAdmin();
     if(document.getElementById('tab-testimonials')?.style.display==='block') renderTestAdmin();
     if(document.getElementById('tab-affiliates')?.style.display==='block') renderAffAdmin();
@@ -1345,13 +1533,13 @@ function startListening(){
 }
 
 function saveToStorage(){
-  const payload = {products:S.products, testimonials:S.testimonials, config:S.config, affiliates:S.affiliates, clientOverrides:S.clientOverrides, coupons:S.coupons, updates:S.updates};
+  const payload = {products:S.products, services:S.services, testimonials:S.testimonials, config:S.config, affiliates:S.affiliates, clientOverrides:S.clientOverrides, coupons:S.coupons, updates:S.updates};
   let sizeBytes = 0;
   try{ sizeBytes = new Blob([JSON.stringify(payload)]).size; }catch(e){}
   const LIMIT_BYTES = 900*1024; // margem de segurança abaixo do limite real de 1MB do Firestore por documento
   if(sizeBytes > LIMIT_BYTES){
     console.error('Documento da loja demasiado grande para gravar:', sizeBytes, 'bytes (limite do Firestore ~1MB)');
-    alert('⚠️ ATENÇÃO — ESTA ALTERAÇÃO NÃO FOI GUARDADA!\n\nA tua loja atingiu o limite de armazenamento do Firestore (demasiadas fotos ou fotos muito pesadas dentro de produtos/banners).\n\nO que fazer agora:\n1. Remove ou troca por uma foto mais leve num produto (usa "Ficheiro" em vez de fotos muito grandes);\n2. Remove banners de checkout que não sejam essenciais;\n3. Depois tenta guardar de novo.\n\nEnquanto isto não for resolvido, novas alterações a produtos/config vão continuar a falhar sem aviso — por isso este alerta.');
+    alert('⚠️ ATENÇÃO — ESTA ALTERAÇÃO NÃO FOI GUARDADA!\n\nA tua loja atingiu o limite de armazenamento do Firestore (demasiadas fotos ou fotos muito pesadas dentro de produtos/serviços/banners).\n\nO que fazer agora:\n1. Remove ou troca por uma foto mais leve num produto ou serviço (usa "Ficheiro" em vez de fotos muito grandes);\n2. Remove banners de checkout que não sejam essenciais;\n3. Depois tenta guardar de novo.\n\nEnquanto isto não for resolvido, novas alterações a produtos/serviços/config vão continuar a falhar sem aviso — por isso este alerta.');
     toast('⚠️ NÃO guardado — loja demasiado grande. Reduz imagens.','tr');
     return;
   }
@@ -1540,6 +1728,7 @@ function stopMyOrders(){
 
 function startAdminOnlyListeners(){
   startListeningOrders();
+  startListeningQuotes();
   startListeningAffRequests();
   startListeningWithdrawals();
   startListeningAbandoned();
@@ -2138,6 +2327,9 @@ function showLiveViewersToast(productId, productName){
 function openProduct(id){
   const p=S.products.find(x=>x.id===id);if(!p)return;
   S.curProd=p;
+  document.getElementById('ppMainBtn').textContent='Comprar Agora →';
+  document.getElementById('stickyMainBtn').textContent='Comprar Agora →';
+  document.getElementById('ppSecondaryBtn').style.display='none';
   logProductView(p.id);
   showLiveViewersToast(p.id, p.name);
   document.getElementById('ppSellerName').textContent = S.config.name || 'IP Digital AO';
@@ -2219,6 +2411,167 @@ function openProduct(id){
   if(typeof gtag==='function') gtag('event','view_item',{item_id:p.id,item_name:p.name,price:p.price,currency:'AOA'});
   goTo('product');
   setupStickyBuyBar();
+}
+function openService(id){
+  const p=(S.services||[]).find(x=>x.id===id);if(!p)return;
+  p.isService = true;
+  S.curProd=p;
+  logProductView(p.id); // mesma coleção de visualizações, ids de serviço nunca colidem com ids de produto (prefixo 's')
+  showLiveViewersToast(p.id, p.name);
+  document.getElementById('ppSellerName').textContent = S.config.name || 'IP Digital AO';
+  const ppAv = document.getElementById('ppSellerAv');
+  ppAv.innerHTML = S.config.profileImg ? `<img src="${escHtml(S.config.profileImg)}" alt="" style="width:100%;height:100%;object-fit:cover">` : '👤';
+  const cv=document.getElementById('ppCover');
+  cv.innerHTML=p.img?`<img src="${escHtml(p.img)}" alt="${escHtml(p.name)}">`:`<span style="font-size:90px">${escHtml(p.emoji||'💼')}</span>`;
+  document.getElementById('ppCat').textContent=p.cat||'Serviço';
+  document.getElementById('ppTitle').textContent=p.name;
+  document.getElementById('ppDesc').textContent=p.descLong||p.desc||'';
+  const hasPrice = p.serviceType!=='custom' && p.price>0;
+  if(hasPrice){
+    animatePriceCountUp('ppPrice', p.price);
+    document.getElementById('ppPrice').style.display='block';
+  } else {
+    document.getElementById('ppPrice').textContent='Sob consulta';
+  }
+  const ppCompareEl = document.getElementById('ppComparePrice');
+  const ppDiscountEl = document.getElementById('ppDiscountBadge');
+  if(hasPrice && p.comparePrice && p.comparePrice > p.price){
+    const pct = Math.round((1 - p.price/p.comparePrice) * 100);
+    ppCompareEl.textContent = fmt(p.comparePrice) + ' Kzs';
+    ppCompareEl.style.display = 'block';
+    ppDiscountEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:4px;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px">🔥 ${pct}% OFF</span>`;
+    ppDiscountEl.style.display = 'block';
+  } else {
+    ppCompareEl.style.display = 'none';
+    ppDiscountEl.style.display = 'none';
+  }
+  hideUrgency('ppUrgency');
+  document.getElementById('stickyBuyPrice').innerHTML = hasPrice ? `${fmt(p.price)}<small style="font-size:11px;font-weight:500;color:var(--g3lt)"> Kzs</small>` : 'Sob consulta';
+
+  const metaParts = [];
+  if(p.deliveryDeadline) metaParts.push(`<span class="pp-meta-item"><span class="ic">⏱️</span>${escHtml(p.deliveryDeadline)}</span>`);
+  if(p.deliveryDept) metaParts.push(`<span class="pp-meta-item"><span class="ic">🏢</span>${escHtml(p.deliveryDept)}</span>`);
+  if(p.rating>0) metaParts.push(`<span class="pp-meta-item"><span class="ic">⭐</span>${p.rating.toFixed(1)}</span>`);
+  if(p.clients>0) metaParts.push(`<span class="pp-meta-item"><span class="ic">👥</span>${p.clients} clientes</span>`);
+  document.getElementById('ppMetaRow').innerHTML = metaParts.join('');
+  document.getElementById('ppWhoIsSection').style.display='none';
+
+  const faqSection = document.getElementById('ppFaqSection');
+  if(p.faq && p.faq.length){
+    faqSection.style.display = 'block';
+    document.getElementById('ppFaqList').innerHTML = p.faq.map((f,i)=>`
+      <div class="faq-item" data-reveal id="faqItem${i}">
+        <div class="faq-q" onclick="toggleFaq(${i})"><span>${escHtml(f.q)}</span><span class="faq-arrow">▾</span></div>
+        <div class="faq-a"><p>${escHtml(f.a)}</p></div>
+      </div>`).join('');
+  } else {
+    faqSection.style.display = 'none';
+  }
+
+  const relatedSection = document.getElementById('ppRelatedSection');
+  const related = (S.services||[]).filter(x=>x.id!==p.id && x.cat===p.cat && x.status==='published').slice(0,4);
+  if(related.length){
+    relatedSection.style.display = 'block';
+    document.getElementById('ppRelatedGrid').innerHTML = related.map(rp=>{
+      const thumb = rp.img ? `<img src="${escHtml(rp.img)}" alt="" loading="lazy" decoding="async">` : escHtml(rp.emoji||'💼');
+      return `<div class="related-card" onclick="openService('${rp.id}')">
+        <div class="related-thumb">${thumb}</div>
+        <div class="related-body"><div class="related-name">${escHtml(rp.name)}</div><div class="related-price">${rp.serviceType==='custom'?'Sob consulta':fmt(rp.price)+' Kz'}</div></div>
+      </div>`;
+    }).join('');
+  } else {
+    relatedSection.style.display = 'none';
+  }
+
+  // Botões de acção, de acordo com o tipo de serviço configurado no admin
+  const action = p.actionButton || 'buy';
+  const mainBtn = document.getElementById('ppMainBtn');
+  const stickyBtn = document.getElementById('stickyMainBtn');
+  const secBtn = document.getElementById('ppSecondaryBtn');
+  if(action==='quote'){
+    mainBtn.textContent = '📝 Solicitar Orçamento';
+    stickyBtn.textContent = '📝 Solicitar Orçamento';
+    secBtn.style.display='none';
+  } else if(action==='both'){
+    mainBtn.textContent = hasPrice ? 'Comprar Agora →' : '📝 Solicitar Orçamento';
+    stickyBtn.textContent = mainBtn.textContent;
+    secBtn.style.display = hasPrice ? 'block' : 'none';
+    secBtn.textContent = '📝 Solicitar Orçamento';
+  } else {
+    mainBtn.textContent = 'Comprar Agora →';
+    stickyBtn.textContent = 'Comprar Agora →';
+    secBtn.style.display='none';
+  }
+
+  updateOgMeta(p);
+  goTo('product');
+  setupStickyBuyBar();
+}
+function handlePrimaryCta(){
+  const p = S.curProd; if(!p) return;
+  if(!p.isService){ goToCashout(); return; }
+  const action = p.actionButton || 'buy';
+  const wantsQuote = action==='quote' || (action==='both' && p.serviceType==='custom');
+  if(wantsQuote){ runQuoteDestino(p); return; }
+  runBuyDestino(p);
+}
+function handleSecondaryCta(){
+  const p = S.curProd; if(!p || !p.isService) return;
+  runQuoteDestino(p);
+}
+function runBuyDestino(p){
+  const destino = p.ctaDestino || 'checkout';
+  if(destino==='whatsapp'){
+    window.open(`https://wa.me/${S.config.wa||'244923456789'}?text=${encodeURIComponent('Olá! Quero contratar o serviço "'+p.name+'".')}`, '_blank');
+  } else if(destino==='link' && p.ctaLink){
+    window.open(p.ctaLink, '_blank');
+  } else {
+    goToCashout();
+  }
+}
+function runQuoteDestino(p){
+  const destino = p.ctaDestino || 'form';
+  if(destino==='whatsapp'){
+    window.open(`https://wa.me/${S.config.wa||'244923456789'}?text=${encodeURIComponent('Olá! Quero pedir um orçamento para o serviço "'+p.name+'".')}`, '_blank');
+  } else if(destino==='link' && p.ctaLink){
+    window.open(p.ctaLink, '_blank');
+  } else {
+    openQuoteForm(p);
+  }
+}
+function openQuoteForm(p){
+  S.curQuoteService = p;
+  document.getElementById('quoteTit').textContent = 'Orçamento — ' + p.name;
+  document.getElementById('qName').value=''; document.getElementById('qEmail').value=''; document.getElementById('qPhone').value='';
+  const fields = (p.briefingFields||[]);
+  const box = document.getElementById('quoteDynFields');
+  box.innerHTML = fields.map((q,i)=>`<div class="fg"><label class="fl">${escHtml(q)}</label><textarea class="fi" rows="2" id="qDyn${i}"></textarea></div>`).join('');
+  document.getElementById('ovQuote').classList.add('open');
+}
+function submitQuote(){
+  const p = S.curQuoteService; if(!p) return;
+  const name=document.getElementById('qName').value.trim();
+  const email=document.getElementById('qEmail').value.trim();
+  const phone=document.getElementById('qPhone').value.trim();
+  if(!name){toast('⚠️ Insere o teu nome','tr');return;}
+  if(!email||!email.includes('@')){toast('⚠️ Email inválido','tr');return;}
+  if(!phone){toast('⚠️ Insere o teu telefone','tr');return;}
+  const fields = (p.briefingFields||[]);
+  const answers = fields.map((q,i)=>({question:q, answer:(document.getElementById('qDyn'+i)?.value||'').trim()}));
+  const btn = document.getElementById('quoteSubmitBtn');
+  btn.disabled=true; btn.innerHTML='<span class="btn-spinner"></span> A enviar...';
+  QUOTES_COL.add({
+    serviceId: p.id, serviceName: p.name, name, email, phone, answers,
+    status: 'pending', createdAt: firebase.firestore.FieldValue.serverTimestamp(), date: new Date().toLocaleString('pt-AO')
+  }).then(function(){
+    btn.disabled=false; btn.textContent='Enviar Pedido';
+    closeOv('ovQuote');
+    toast('✅ Pedido de orçamento enviado! Entraremos em contacto em breve.','tg');
+  }).catch(function(err){
+    console.error('Erro ao enviar pedido de orçamento.', err);
+    btn.disabled=false; btn.textContent='Enviar Pedido';
+    toast('⚠️ Não foi possível enviar. Tenta novamente.','tr');
+  });
 }
 function updateOgMeta(p){
   const siteName = (S.config && S.config.name) ? S.config.name : 'IP Digital AO';
@@ -2645,7 +2998,7 @@ function submitOrder(){
   S_isSubmittingOrder = true;
   const aff = S.pendingAff ? S.affiliates.find(a=>a.code===S.pendingAff) : null;
   const finalPrice = getFinalPrice();
-  const order = {id:S.ref,productId:S.curProd.id,productName:S.curProd.name,productEmoji:S.curProd.emoji,price:finalPrice,originalPrice:S.curProd.price,deliveryLink:S.curProd.link,name,email,phone,proof:document.getElementById('fProof').value.trim(),method:S.payMethod,status:'pending',date:new Date().toLocaleString('pt-AO')};
+  const order = {id:S.ref,itemType:(S.curProd.isService?'service':'product'),productId:S.curProd.id,productName:S.curProd.name,productEmoji:S.curProd.emoji,price:finalPrice,originalPrice:S.curProd.price,deliveryLink:S.curProd.link,name,email,phone,proof:document.getElementById('fProof').value.trim(),method:S.payMethod,status:'pending',date:new Date().toLocaleString('pt-AO')};
   if(S.appliedCoupon){
     order.couponCode = S.appliedCoupon.code;
     order.couponPercent = S.appliedCoupon.percent;
@@ -2661,7 +3014,7 @@ function submitOrder(){
   if(aff){
     order.affCode = aff.code;
     order.affName = aff.name;
-    order.affCommission = Math.round(finalPrice * getCommissionPct(S.curProd) / 100);
+    order.affCommission = calcCommission(S.curProd, finalPrice);
   }
   const btn=document.getElementById('submitOrderBtn');
   const originalBtnHTML = btn ? btn.innerHTML : '';
@@ -2846,7 +3199,20 @@ function renderAffDash(codeOverride){
     const monthlyGoal = aff.monthlyGoal || 0;
     const goalPct = monthlyGoal ? Math.min(100, Math.round((monthlySales/monthlyGoal)*100)) : 0;
 
+    const hourAff = new Date().getHours();
+    const greetingAff = hourAff<12?'Bom dia':hourAff<19?'Boa tarde':'Boa noite';
     document.getElementById('affDashBody').innerHTML = `
+    <div style="margin-bottom:20px">
+      <h1 style="font-family:'Fraunces',serif;font-weight:700;font-size:26px;color:#fff">${greetingAff}, ${escHtml((aff.name||'').split(' ')[0])} 👋</h1>
+      <p style="color:var(--g3lt);font-size:13.5px;margin-top:4px">Aqui está o resumo do teu desempenho</p>
+    </div>
+    <div class="dash-metric-grid">
+      <div class="dash-metric-card" style="--dash-ic-bg:rgba(37,99,235,.18);--dash-glow:rgba(37,99,235,.18)"><div class="dash-metric-ic">👆</div><div class="dash-metric-val">${clicks}</div><div class="dash-metric-lbl">Cliques no link</div></div>
+      <div class="dash-metric-card" style="--dash-ic-bg:rgba(22,163,74,.18);--dash-glow:rgba(22,163,74,.18)"><div class="dash-metric-ic">✅</div><div class="dash-metric-val">${confirmedCount}</div><div class="dash-metric-lbl">Vendas confirmadas</div></div>
+      <div class="dash-metric-card" style="--dash-ic-bg:rgba(245,158,11,.18);--dash-glow:rgba(245,158,11,.18)"><div class="dash-metric-ic">💰</div><div class="dash-metric-val">${fmt(totalCommission)}<small style="font-size:14px;color:var(--g3lt)"> Kz</small></div><div class="dash-metric-lbl">Comissão total</div></div>
+      <div class="dash-metric-card" style="--dash-ic-bg:rgba(108,99,255,.18);--dash-glow:rgba(108,99,255,.18)"><div class="dash-metric-ic">💸</div><div class="dash-metric-val">${fmt(pendingCommission)}<small style="font-size:14px;color:var(--g3lt)"> Kz</small></div><div class="dash-metric-lbl">Por receber</div></div>
+    </div>
+
     <div class="afp-linkbar">
       <input type="text" readonly value="${genAffLink(aff.code)}">
       <button class="btn bv bsm" onclick="copyTxt('${genAffLink(aff.code)}',this)">Copiar</button>
@@ -3799,13 +4165,55 @@ function tryLogin(){
 function doLogout(){
   auth.signOut().then(function(){goTo('store');});
 }
-function renderAdmin(){renderStats();renderConversionFunnel();renderOrders();}
+function renderAdmin(){renderHomeAdmin();}
+function renderHomeAdmin(){
+  const hour = new Date().getHours();
+  const greeting = hour<12?'Bom dia':hour<19?'Boa tarde':'Boa noite';
+  const nome = (S.config && S.config.name) ? S.config.name.split(' ')[0] : 'Admin';
+  document.getElementById('adminGreeting').innerHTML = `<h1 style="font-family:'Fraunces',serif;font-weight:700;font-size:30px;color:#fff">${greeting}, ${escHtml(nome)} 👋</h1><p style="color:var(--g3lt);font-size:14px;margin-top:4px">Aqui está o resumo da tua loja hoje</p>`;
+
+  const confirmedOrders = S.orders.filter(o=>o.status==='confirmed'||o.status==='delivered');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const revToday = confirmedOrders.filter(o=>new Date(o.date.split(',')[0].split('/').reverse().join('-'))>=today).reduce((s,o)=>s+(o.price||0),0);
+  const revTotal = confirmedOrders.reduce((s,o)=>s+(o.price||0),0);
+  const pendingOrders = S.orders.filter(o=>o.status==='pending').length;
+  const commissionDue = (S.affiliates||[]).reduce((sum,a)=>{
+    const sales=S.orders.filter(o=>o.affCode===a.code && (o.status==='confirmed'||o.status==='delivered'));
+    const total=sales.reduce((s,o)=>s+(o.affCommission||0),0);
+    return sum + (total-(a.paidTotal||0));
+  },0);
+  const pendingQuotes = (S.quoteRequests||[]).filter(q=>q.status==='pending').length;
+  const pendingAffReqs = (S.affiliateRequests||[]).length;
+
+  const grid = document.getElementById('adminDashGrid');
+  grid.innerHTML = `
+    <div class="dash-metric-card" style="--dash-ic-bg:rgba(22,163,74,.18);--dash-glow:rgba(22,163,74,.18)"><div class="dash-metric-ic">💰</div><div class="dash-metric-val">${fmt(revTotal)}<small style="font-size:15px;color:var(--g3lt)"> Kz</small></div><div class="dash-metric-lbl">Receita confirmada</div>${revToday>0?`<div class="dash-metric-delta up">↑ ${fmt(revToday)} Kz hoje</div>`:''}</div>
+    <div class="dash-metric-card" style="--dash-ic-bg:rgba(245,158,11,.18);--dash-glow:rgba(245,158,11,.18)"><div class="dash-metric-ic">🤝</div><div class="dash-metric-val">${fmt(commissionDue)}<small style="font-size:15px;color:var(--g3lt)"> Kz</small></div><div class="dash-metric-lbl">Comissões devidas</div></div>
+    <div class="dash-metric-card" style="--dash-ic-bg:rgba(37,99,235,.18);--dash-glow:rgba(37,99,235,.18)"><div class="dash-metric-ic">📦</div><div class="dash-metric-val">${pendingOrders}</div><div class="dash-metric-lbl">Pedidos pendentes</div></div>
+    <div class="dash-metric-card" style="--dash-ic-bg:rgba(22,163,74,.18);--dash-glow:rgba(22,163,74,.18)"><div class="dash-metric-ic">🛍️</div><div class="dash-metric-val">${S.products.length}</div><div class="dash-metric-lbl">Produtos</div></div>
+    <div class="dash-metric-card" style="--dash-ic-bg:rgba(108,99,255,.18);--dash-glow:rgba(108,99,255,.18)"><div class="dash-metric-ic">💼</div><div class="dash-metric-val">${(S.services||[]).length}</div><div class="dash-metric-lbl">Serviços</div></div>
+    <div class="dash-metric-card" style="--dash-ic-bg:rgba(220,38,38,.18);--dash-glow:rgba(220,38,38,.18)"><div class="dash-metric-ic">📋</div><div class="dash-metric-val">${pendingQuotes}</div><div class="dash-metric-lbl">Orçamentos pendentes</div></div>
+  `;
+
+  renderSalesChart('adminDashChart', S.orders, 7);
+
+  const alerts = [];
+  if(pendingOrders>0) alerts.push(`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--g1)"><span>⏳ <strong>${pendingOrders}</strong> pedido(s) à espera de confirmação</span><button class="btn bv bsm" onclick="switchTab('orders')">Ver</button></div>`);
+  if(pendingQuotes>0) alerts.push(`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--g1)"><span>📋 <strong>${pendingQuotes}</strong> pedido(s) de orçamento por responder</span><button class="btn bv bsm" onclick="switchTab('quotes')">Ver</button></div>`);
+  if(pendingAffReqs>0) alerts.push(`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--g1)"><span>🤝 <strong>${pendingAffReqs}</strong> pedido(s) de afiliação por aprovar</span><button class="btn bv bsm" onclick="switchTab('affiliates')">Ver</button></div>`);
+  if(commissionDue>0) alerts.push(`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0"><span>💸 <strong>${fmt(commissionDue)} Kz</strong> em comissões por pagar aos afiliados</span><button class="btn bo bsm" onclick="switchTab('withdrawals')">Ver</button></div>`);
+  document.getElementById('adminDashAlerts').innerHTML = alerts.length ? alerts.join('') : `<p style="color:var(--g3lt);text-align:center;padding:12px 0">✅ Tudo em dia — nada precisa da tua atenção agora.</p>`;
+}
 function switchTab(t){
   haptic('light');
-  ['orders','products','clients','affiliates','withdrawals','abandoned','coupons','updates','testimonials','config'].forEach(k=>document.getElementById('tab-'+k).style.display=k===t?'block':'none');
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['orders','products','clients','affiliates','withdrawals','abandoned','coupons','updates','testimonials','config'][i]===t));
+  const tabs = ['home','orders','products','services','quotes','clients','affiliates','withdrawals','abandoned','coupons','updates','testimonials','config'];
+  tabs.forEach(k=>document.getElementById('tab-'+k).style.display=k===t?'block':'none');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
+  if(t==='home')renderHomeAdmin();
   if(t==='orders'){renderStats();renderOrders();}
   if(t==='products')renderProds();
+  if(t==='services')renderServicesAdmin();
+  if(t==='quotes')renderQuotesAdmin();
   if(t==='clients')renderClientsAdmin();
   if(t==='affiliates')renderAffAdmin();
   if(t==='withdrawals')renderWithdrawalsAdmin();
@@ -4038,7 +4446,7 @@ function renderOrders(){
 function badgeFor(s){const m={pending:['b-p','⏳ Pendente'],confirmed:['b-c','✅ Confirmado'],delivered:['b-d','📨 Entregue']};const[c,l]=m[s]||['b-p','?'];return`<span class="badge ${c}">${l}</span>`;}
 function openConfirm(id){
   const o=S.orders.find(x=>x.id===id);if(!o)return;S.curOrder=o;
-  const pl=S.products.find(p=>p.id===o.productId)?.link||'';
+  const pl=findCatalogItem(o.productId)?.link||'';
   const affLine = o.affCode ? `<div style="font-size:13px;color:var(--vdim)">🤝 Venda via afiliado: <strong>${escHtml(o.affName||o.affCode)}</strong> · Comissão: ${fmt(o.affCommission||0)} Kz</div>` : '';
   const bumpLine = o.bumpProductName ? `<div style="font-size:13px;color:var(--vdim);font-weight:700;margin-top:6px">🚀 Comprou também o acelerador: ${escHtml(o.bumpProductName)} (${fmt(o.bumpPrice||0)} Kz) — lembra-te de incluir o link de entrega deste produto também!</div>` : '';
   document.getElementById('confirmInfo').innerHTML=`<div style="background:var(--off);border-radius:var(--rsm);padding:16px;border:1px solid var(--g1)"><div style="font-weight:700;font-size:15px;margin-bottom:8px">${o.productEmoji} ${escHtml(o.productName)}</div><div style="font-size:13px;color:var(--g3lt)">Cliente: <strong style="color:var(--black)">${escHtml(o.name)}</strong> · ${escHtml(o.email)}</div><div style="font-size:13px;color:var(--g3lt)">Ref: <strong style="color:var(--vdim);font-family:'Fraunces';font-size:16px">${o.id}</strong>${o.proof?` · Comprovativo: ${escHtml(o.proof)}`:''}</div>${affLine}${bumpLine}</div>`;
@@ -4089,7 +4497,7 @@ function recomputePublicStats(){
 }
 function doConfirm(){
   if(S.currentUserRole!=='admin'){toast('⛔ Sem permissão','tr');return;}
-  const o=S.curOrder,link=document.getElementById('deliveryIn').value.trim()||S.products.find(p=>p.id===o.productId)?.link||'';
+  const o=S.curOrder,link=document.getElementById('deliveryIn').value.trim()||findCatalogItem(o.productId)?.link||'';
   if(!link){toast('⚠️ Adiciona um link de entrega','tr');return;}
   updateOrder(o._docId||o.id, {status:'confirmed', deliveryLink:link}).then(function(){
     closeOv('ovConfirm');
@@ -4154,19 +4562,22 @@ function exportCSV(){
 
 function renderStorageGauge(){
   const el = document.getElementById('storageGauge');
-  if(!el) return;
-  const payload = {products:S.products, testimonials:S.testimonials, config:S.config, affiliates:S.affiliates, clientOverrides:S.clientOverrides, coupons:S.coupons, updates:S.updates};
+  const el2 = document.getElementById('serviceStorageGauge');
+  if(!el && !el2) return;
+  const payload = {products:S.products, services:S.services, testimonials:S.testimonials, config:S.config, affiliates:S.affiliates, clientOverrides:S.clientOverrides, coupons:S.coupons, updates:S.updates};
   let bytes = 0;
   try{ bytes = new Blob([JSON.stringify(payload)]).size; }catch(e){}
   const limitBytes = 1024*1024;
   const pct = Math.min(100, Math.round((bytes/limitBytes)*100));
   const kb = (bytes/1024).toFixed(0);
   const color = pct>=85 ? 'var(--red)' : pct>=60 ? '#B45309' : 'var(--green)';
-  el.innerHTML = `
-    <div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>💾 Armazenamento da loja (fotos incluídas)</strong><span style="color:${color};font-weight:700">${kb} KB / 1024 KB</span></div>
+  const html = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong>💾 Armazenamento da loja (produtos + serviços, fotos incluídas)</strong><span style="color:${color};font-weight:700">${kb} KB / 1024 KB</span></div>
     <div style="height:6px;background:var(--g1);border-radius:6px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:6px"></div></div>
     ${pct>=70?`<p style="margin-top:6px;color:${color}">⚠️ A aproximares-te do limite. Usa fotos mais leves (formato "Ficheiro") ou remove banners que não precises, para evitar que alterações futuras deixem de gravar.</p>`:''}
   `;
+  if(el) el.innerHTML = html;
+  if(el2) el2.innerHTML = html;
 }
 function renderLimitBanner(){
   const n=S.products.length;
@@ -4331,6 +4742,267 @@ function copyGenLink(){
   copyTxt(genDirectCheckoutLink(S._editingProdId),null);
 }
 function delProd(id){if(!confirm('Eliminar produto?'))return;S.products=S.products.filter(p=>p.id!==id);saveToStorage();renderProds();renderStore();toast('🗑️ Eliminado');}
+/* ══════════════ SERVIÇOS (admin) ══════════════ */
+let S_serviceImg = '';
+function handleServiceImgFile(inp){
+  const file=inp.files[0];if(!file)return;
+  if(file.size>5*1024*1024){toast('⚠️ Ficheiro muito grande (máx 5MB)','tr');inp.value='';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    compressImg(e.target.result,720,0.75,function(compressed){
+      S_serviceImg=compressed;
+      document.getElementById('sImgPrev').src=compressed;
+      document.getElementById('sImgThumb').style.display='block';
+    });
+  };
+  reader.readAsDataURL(file);
+}
+function removeServiceImg(){
+  S_serviceImg='';
+  document.getElementById('sImgThumb').style.display='none';
+  document.getElementById('file-sImg').value='';
+}
+function onServiceTypeChange(){
+  const t = document.getElementById('sType').value;
+  const showPrice = t!=='custom';
+  document.getElementById('sPriceWrap').style.display = showPrice?'block':'none';
+  document.getElementById('sComparePriceWrap').style.display = showPrice?'block':'none';
+}
+function onServiceActionChange(){ /* mantido para clareza futura; validação real acontece em saveService() */ }
+function openServiceModal(id){
+  document.getElementById('sImgThumb').style.display='none';
+  S_serviceImg='';
+  if(id){
+    const s=(S.services||[]).find(x=>x.id===id);if(!s)return;
+    document.getElementById('serviceTit').textContent='Editar Serviço';
+    document.getElementById('sEditId').value=s.id;
+    document.getElementById('sName').value=s.name||'';
+    document.getElementById('sEmoji').value=s.emoji||'';
+    document.getElementById('sCat').value=s.cat||'';
+    document.getElementById('sDescShort').value=s.desc||'';
+    document.getElementById('sDescLong').value=s.descLong||'';
+    document.getElementById('sType').value=s.serviceType||'fixed';
+    document.getElementById('sPrice').value=s.price||'';
+    document.getElementById('sComparePrice').value=s.comparePrice||'';
+    document.getElementById('sActionButton').value=s.actionButton||'buy';
+    document.getElementById('sCtaDestino').value=s.ctaDestino||'checkout';
+    document.getElementById('sCtaLink').value=s.ctaLink||'';
+    document.getElementById('sCtaLinkWrap').style.display = (s.ctaDestino==='link')?'block':'none';
+    document.getElementById('sAffAllow').checked = !!s.affAllow;
+    document.getElementById('sAffFieldsWrap').style.display = s.affAllow?'block':'none';
+    document.getElementById('sCommissionPct').value = (s.commissionPct!=null?s.commissionPct:'');
+    document.getElementById('sCommissionFixed').value = (s.commissionFixed!=null?s.commissionFixed:'');
+    document.getElementById('sBriefingOn').checked = !!s.briefingOn;
+    document.getElementById('sBriefingFieldsWrap').style.display = s.briefingOn?'block':'none';
+    document.getElementById('sBriefingFields').value = (s.briefingFields||[]).join('\n');
+    document.getElementById('sDeadline').value=s.deliveryDeadline||'';
+    document.getElementById('sDept').value=s.deliveryDept||'';
+    document.getElementById('sSeoUrl').value=s.seoUrl||'';
+    document.getElementById('sSeoTitle').value=s.seoTitle||'';
+    document.getElementById('sSeoDesc').value=s.seoDesc||'';
+    document.getElementById('sStatus').value=s.status||'published';
+    if(s.img){ S_serviceImg=s.img; document.getElementById('sImgPrev').src=s.img; document.getElementById('sImgThumb').style.display='block'; }
+  } else {
+    document.getElementById('serviceTit').textContent='Novo Serviço';
+    ['sEditId','sName','sEmoji','sCat','sDescShort','sDescLong','sPrice','sComparePrice','sCtaLink','sCommissionPct','sCommissionFixed','sBriefingFields','sDeadline','sDept','sSeoUrl','sSeoTitle','sSeoDesc'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('sType').value='fixed';
+    document.getElementById('sActionButton').value='buy';
+    document.getElementById('sCtaDestino').value='checkout';
+    document.getElementById('sCtaLinkWrap').style.display='none';
+    document.getElementById('sAffAllow').checked=false;
+    document.getElementById('sAffFieldsWrap').style.display='none';
+    document.getElementById('sBriefingOn').checked=false;
+    document.getElementById('sBriefingFieldsWrap').style.display='none';
+    document.getElementById('sStatus').value='published';
+  }
+  onServiceTypeChange();
+  document.getElementById('ovService').classList.add('open');
+}
+function saveService(){
+  const name=document.getElementById('sName').value.trim();
+  const descShort=document.getElementById('sDescShort').value.trim();
+  if(!name){toast('⚠️ Nome do serviço obrigatório','tr');return;}
+  if(!descShort){toast('⚠️ Descrição curta obrigatória','tr');return;}
+  const serviceType=document.getElementById('sType').value;
+  let price = parseFloat(document.getElementById('sPrice').value)||0;
+  let comparePrice = parseFloat(document.getElementById('sComparePrice').value)||0;
+  if(serviceType!=='custom' && (!price||price<=0)){toast('⚠️ Insere um preço válido (ou muda o tipo para Personalizado)','tr');return;}
+  if(comparePrice && comparePrice<=price){toast('⚠️ O preço promocional deve ser maior que o preço real','tr');return;}
+  const actionButton=document.getElementById('sActionButton').value;
+  const ctaDestino=document.getElementById('sCtaDestino').value;
+  const ctaLink=document.getElementById('sCtaLink').value.trim();
+  if(ctaDestino==='link' && !ctaLink){toast('⚠️ Insere o link personalizado','tr');return;}
+  const affAllow=document.getElementById('sAffAllow').checked;
+  let commissionPct=''; let commissionFixed='';
+  if(affAllow){
+    const pctRaw=document.getElementById('sCommissionPct').value.trim();
+    const fixedRaw=document.getElementById('sCommissionFixed').value.trim();
+    if(pctRaw!==''){ commissionPct=parseFloat(pctRaw); if(!isFinite(commissionPct)||commissionPct<0||commissionPct>100){toast('⚠️ Comissão % deve estar entre 0 e 100','tr');return;} }
+    if(fixedRaw!==''){ commissionFixed=parseFloat(fixedRaw); if(!isFinite(commissionFixed)||commissionFixed<0){toast('⚠️ Comissão fixa inválida','tr');return;} }
+  }
+  const briefingOn=document.getElementById('sBriefingOn').checked;
+  const briefingFields = briefingOn ? document.getElementById('sBriefingFields').value.split('\n').map(s=>s.trim()).filter(Boolean) : [];
+  const id=document.getElementById('sEditId').value;
+  const data={
+    name, emoji:document.getElementById('sEmoji').value||'💼', cat:document.getElementById('sCat').value.trim()||'Serviços',
+    desc:descShort, descLong:document.getElementById('sDescLong').value.trim(),
+    serviceType, price, comparePrice,
+    actionButton, ctaDestino, ctaLink,
+    affAllow, commissionPct, commissionFixed,
+    briefingOn, briefingFields,
+    deliveryDeadline:document.getElementById('sDeadline').value.trim(),
+    deliveryDept:document.getElementById('sDept').value.trim(),
+    seoUrl:document.getElementById('sSeoUrl').value.trim(),
+    seoTitle:document.getElementById('sSeoTitle').value.trim(),
+    seoDesc:document.getElementById('sSeoDesc').value.trim(),
+    status:document.getElementById('sStatus').value,
+    img:S_serviceImg||'', isService:true, faq:[]
+  };
+  if(id){
+    const i=S.services.findIndex(s=>s.id===id);
+    S.services[i]={...S.services[i],...data};
+    toast('✅ Serviço actualizado','tg');
+  } else {
+    S.services.push({id:'s'+Date.now(), ...data});
+    toast('✅ Serviço adicionado','tg');
+  }
+  saveToStorage();
+  closeOv('ovService');
+  renderServicesAdmin();
+  renderServices();
+}
+function delService(id){
+  if(!confirm('Eliminar serviço?'))return;
+  S.services=S.services.filter(s=>s.id!==id);
+  saveToStorage();renderServicesAdmin();renderServices();toast('🗑️ Eliminado');
+}
+function duplicateService(id){
+  const s=(S.services||[]).find(x=>x.id===id);if(!s)return;
+  const copy={...s, id:'s'+Date.now(), name:s.name+' (cópia)', status:'draft'};
+  S.services.push(copy);
+  saveToStorage();renderServicesAdmin();
+  toast('📋 Serviço duplicado como rascunho','tg');
+}
+function serviceStatusLabel(st){
+  if(st==='draft') return '📝 Rascunho';
+  if(st==='archived') return '🗄️ Arquivado';
+  return '✅ Publicado';
+}
+function serviceTypeLabel(t){
+  if(t==='custom') return '🧩 Personalizado';
+  if(t==='hybrid') return '🔀 Híbrido';
+  return '💳 Preço Fixo';
+}
+function renderServicesAdmin(){
+  renderStorageGauge();
+  const tb=document.getElementById('servicesBody'); if(!tb) return;
+  const services = S.services||[];
+  if(!services.length){tb.innerHTML='<tr><td colspan="9"><div class="empty"><div class="ei">💼</div><p>Nenhum serviço criado ainda.</p></div></td></tr>';return;}
+  tb.innerHTML = services.map(s=>{
+    const thumb = s.img?`<img src="${escHtml(s.img)}" style="width:44px;height:44px;border-radius:8px;object-fit:cover">`:`<span style="font-size:24px">${escHtml(s.emoji||'💼')}</span>`;
+    const priceLabel = s.serviceType==='custom' ? 'Sob consulta' : (fmt(s.price)+' Kzs');
+    const orders = S.orders ? S.orders.filter(o=>o.productId===s.id) : [];
+    const confirmedOrders = orders.filter(o=>o.status==='confirmed'||o.status==='delivered');
+    const revenue = confirmedOrders.reduce((sum,o)=>sum+(o.price||0),0);
+    const quotesCount = (S.quoteRequests||[]).filter(q=>q.serviceId===s.id).length;
+    const pedidosCount = orders.length + quotesCount;
+    return `<tr>
+      <td style="display:flex;align-items:center;gap:10px">${thumb}<div><strong>${escHtml(s.name)}</strong><br><span style="font-size:11px;color:var(--g3lt)">${serviceStatusLabel(s.status)}</span></div></td>
+      <td><span class="badge" style="background:var(--vbg);color:var(--vdim)">${escHtml(s.cat)}</span></td>
+      <td><strong>${priceLabel}</strong></td>
+      <td style="font-size:12px">${serviceTypeLabel(s.serviceType)}</td>
+      <td>${serviceStatusLabel(s.status)}</td>
+      <td>${s.affAllow?'✅ Sim':'❌ Não'}</td>
+      <td>${pedidosCount}</td>
+      <td>${fmt(revenue)} Kz</td>
+      <td style="display:flex;gap:6px"><button class="btn bd bsm" onclick="openServiceModal('${s.id}')">✏️</button><button class="btn bo bsm" onclick="duplicateService('${s.id}')">📋</button><button class="btn br bsm" onclick="delService('${s.id}')">🗑️</button></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ══════════════ ORÇAMENTOS (pedidos de serviço) — admin ══════════════ */
+let unsubscribeQuotes = null;
+function startListeningQuotes(){
+  if(unsubscribeQuotes) unsubscribeQuotes();
+  unsubscribeQuotes = QUOTES_COL.orderBy('createdAt','desc').onSnapshot(function(snap){
+    const list=[];
+    snap.forEach(function(doc){ list.push({_docId:doc.id, ...doc.data()}); });
+    S.quoteRequests = list;
+    const dueCount = list.filter(q=>q.status==='pending').length;
+    const badge = document.getElementById('quotesDueBadge');
+    if(badge){ badge.style.display = dueCount>0?'inline-block':'none'; badge.textContent = dueCount; }
+    if(document.getElementById('tab-quotes')?.style.display==='block') renderQuotesAdmin();
+    if(document.getElementById('tab-services')?.style.display==='block') renderServicesAdmin();
+  }, function(err){ console.error('Erro ao sincronizar pedidos de orçamento.', err); });
+}
+S.qFilter='all';
+function filterQ(f,btn){
+  S.qFilter=f;
+  document.querySelectorAll('#qFilters .fb').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderQuotesAdmin();
+}
+function quoteStatusLabel(st){
+  if(st==='respondido') return '💬 Respondido';
+  if(st==='fechado') return '✅ Fechado';
+  return '⏳ Pendente';
+}
+function renderQuotesAdmin(){
+  const tb=document.getElementById('quotesBody'); if(!tb) return;
+  let list = S.quoteRequests||[];
+  if(S.qFilter && S.qFilter!=='all') list = list.filter(q=>q.status===S.qFilter);
+  if(!list.length){tb.innerHTML='<tr><td colspan="6"><div class="empty"><div class="ei">📋</div><p>Nenhum pedido de orçamento.</p></div></td></tr>';return;}
+  tb.innerHTML = list.map(q=>{
+    const answersHtml = (q.answers||[]).filter(a=>a.answer).map(a=>`<div style="margin-bottom:4px"><strong style="font-size:11px;color:var(--g3lt)">${escHtml(a.question)}:</strong> ${escHtml(a.answer)}</div>`).join('') || '<span style="color:var(--g3lt);font-size:12px">Sem briefing</span>';
+    return `<tr>
+      <td><strong>${escHtml(q.name)}</strong><br><span style="font-size:11px;color:var(--g3lt)">${escHtml(q.email)}<br>${escHtml(q.phone)}</span></td>
+      <td>${escHtml(q.serviceName)}</td>
+      <td style="max-width:240px;font-size:12px">${answersHtml}</td>
+      <td>${quoteStatusLabel(q.status)}</td>
+      <td style="font-size:12px;color:var(--g3lt)">${escHtml(q.date||'')}</td>
+      <td style="display:flex;gap:6px;flex-direction:column">
+        <select class="fi" style="font-size:11px;padding:4px 6px" onchange="setQuoteStatus('${q._docId}',this.value)">
+          <option value="pending" ${q.status==='pending'?'selected':''}>⏳ Pendente</option>
+          <option value="respondido" ${q.status==='respondido'?'selected':''}>💬 Respondido</option>
+          <option value="fechado" ${q.status==='fechado'?'selected':''}>✅ Fechado</option>
+        </select>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function setQuoteStatus(docId, status){
+  QUOTES_COL.doc(docId).update({status}).catch(function(err){
+    console.error('Erro ao actualizar estado do orçamento.', err);
+    toast('⚠️ Não foi possível actualizar','tr');
+  });
+}
+
+/* ══════════════ SERVIÇOS — loja pública ══════════════ */
+function renderServices(){
+  const grid=document.getElementById('servicesGrid'); if(!grid) return;
+  const services=(S.services||[]).filter(s=>s.status==='published');
+  const sec=document.getElementById('secServicos');
+  if(!services.length){ if(sec) sec.style.display='none'; return; }
+  if(sec) sec.style.display='block';
+  grid.innerHTML = services.map((s,idx)=>{
+    const thumb = s.img?`<img src="${escHtml(s.img)}" alt="${escHtml(s.name)}" loading="lazy" decoding="async" onload="this.classList.add('loaded');this.parentElement.classList.remove('skeleton')">`:`<span class="pcard-emoji">${escHtml(s.emoji||'💼')}</span>`;
+    const priceLabel = s.serviceType==='custom' ? 'Sob consulta' : (fmt(s.price)+'<small> Kzs</small>');
+    const typeBadge = `<div class="pcard-type-badge"><span>${serviceTypeLabel(s.serviceType)}</span></div>`;
+    return `<div class="pcard pcard-enter" style="animation-delay:${idx*0.06}s" onclick="openService('${s.id}')">
+      <div class="pcard-thumb${s.img?' skeleton':''}"><span class="pcard-cat">${escHtml(s.cat)}</span>${thumb}</div>
+      <div class="pcard-body">
+        <div class="pcard-title">${escHtml(s.name)}</div>
+        <div class="pcard-desc">${escHtml(s.desc)}</div>
+        ${typeBadge}
+        <div class="pcard-footer"><div class="pcard-price">${s.comparePrice&&s.serviceType!=='custom'?`<span style="display:block;font-size:19px;font-weight:600;color:var(--g3lt);text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2.5px;margin-bottom:3px">${fmt(s.comparePrice)} Kzs</span>`:''}${priceLabel}</div><button class="btn bv bsm">Ver mais →</button></div>
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.pcard-thumb img').forEach(img=>{
+    if(img.complete){ img.classList.add('loaded'); img.parentElement.classList.remove('skeleton'); }
+  });
+}
+
 
 function renderTestAdmin(){
   const tb=document.getElementById('testBody');
@@ -4684,6 +5356,7 @@ document.querySelectorAll('.upload-zone').forEach(z=>{
 
 renderStore();
 renderTestimonials();
+renderServices();
 
 // ─ Validação Instantânea de Campos no Checkout ─
 function setupCheckoutValidation(){
