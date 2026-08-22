@@ -3661,11 +3661,16 @@ function renderAffDash(codeOverride){
     <div class="afp-section" style="margin-top:16px">
       <div class="afp-section-tit">🔗 LINKS POR PRODUTO</div>
       ${!S.products.length ? '<p style="font-size:13px;color:var(--g3lt)">Ainda não há produtos na loja.</p>' :
-        S.products.map(p=>`<div style="background:var(--off);border-radius:10px;padding:12px 14px;margin-bottom:10px">
-          <div style="font-weight:700;font-size:13.5px;margin-bottom:8px">${escHtml(p.emoji||'📦')} ${escHtml(p.name)}</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn bo bsm" onclick="copyTxt('${genAffProductLink(p.id,aff.code,false)}',this)">🛍️ Página de Vendas</button>
-            <button class="btn bo bsm" onclick="copyTxt('${genAffProductLink(p.id,aff.code,true)}',this)">⚡ Checkout Directo</button>
+        S.products.map(p=>`<div style="background:var(--off);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <div style="width:52px;height:52px;flex-shrink:0;border-radius:8px;overflow:hidden;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:24px">
+            ${p.img?`<img src="${p.img}" alt="${escHtml(p.name)}" style="width:100%;height:100%;object-fit:cover">`:escHtml(p.emoji||'📦')}
+          </div>
+          <div style="flex:1;min-width:150px">
+            <div style="font-weight:700;font-size:13.5px;margin-bottom:8px">${escHtml(p.name)}</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn bo bsm" onclick="copyTxt('${genAffProductLink(p.id,aff.code,false)}',this)">🛍️ Página de Vendas</button>
+              <button class="btn bo bsm" onclick="copyTxt('${genAffProductLink(p.id,aff.code,true)}',this)">⚡ Checkout Directo</button>
+            </div>
           </div>
         </div>`).join('')
       }
